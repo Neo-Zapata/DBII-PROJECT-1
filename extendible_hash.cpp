@@ -258,29 +258,23 @@ Index extendible_hash::search_index(int key)
 Index extendible_hash::iterate_key(int key)
 {
     Index index;
-    index = search_index(key);
-    if (index.key == key)
-    {
-        return index;
-    }
+    int search_key = key & ((1 << D) - 1);
 
-    int search_key = (key % 2 == 0 ? 0 : 1);
+    cout << "\nsearch_key: " << search_key << "\n";
     index = search_index(search_key);
     if (index.key == search_key)
-    {
         return index;
-    }
 
-    for (int i = 1; i < D; i++)
+    for (int i = D - 1; i >= 0; i--)
     {
         if (key & (1 << i))
         {
-            search_key += (key & (1 << i));
+            search_key ^= 1 << i;
+
+            cout << "\nsearch_key: " << search_key << "\n";
             index = search_index(search_key);
             if (index.key == search_key)
-            {
                 break;
-            }
         }
     }
     return index;
