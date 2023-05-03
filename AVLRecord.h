@@ -17,7 +17,7 @@
 using namespace std;
 
 #define NAME_SIZE 110
-#define TYPE_SIZE 8
+#define TYPE_SIZ_E  8 
 
 struct AVLRecord{
 
@@ -42,8 +42,8 @@ public:
 
         cout << "Tipo de anime: ";
         getline(cin, type);
-        strncpy(this->type, type.c_str(), TYPE_SIZE - 1);
-        this->name[TYPE_SIZE - 1] = '\0';
+        strncpy(this->type, type.c_str(), TYPE_SIZ_E - 1);
+        this->name[TYPE_SIZ_E - 1] = '\0';
 
         cout << "Número de episodios: ";
         cin>> episodes;

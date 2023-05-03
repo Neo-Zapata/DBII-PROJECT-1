@@ -61,8 +61,10 @@ public:
     void set_filename (string filename){ this->filename = filename;}
 
     AVLRecord find(int animeid) {
+        cout<<"------ Search ------"<<endl;
+
         std::ifstream file(this->filename, std::ios::binary);
-        cout<<"root que pasa: "<<this->root<<endl;
+        //cout<<"root que pasa: "<<this->root<<endl;
         AVLRecord result = find(file, this->root, animeid); // El root puede cambiar o solo es -1 cuando no tiene valores el archivo?
         result.get_data();
         file.close();
@@ -70,6 +72,8 @@ public:
     }
 
     void insert(AVLRecord& record) {
+        cout<<"------ Insert ------"<<endl;
+
         std::fstream file(this->filename, std::ios::in|std::ios::out|std::ios::binary );
         //insert(file, this->root, record , true);
         insert(file, this->root, record );
@@ -77,6 +81,8 @@ public:
     }
 
     void remove(int anime_id) {
+        cout<<"------ Remove ------"<<endl;
+
         std::fstream file(this->filename, std::ios::in|std::ios::out|std::ios::binary );
         remove(file, this -> root, anime_id);
         file.close();
@@ -91,6 +97,8 @@ public:
     } */
 
     vector<AVLRecord> rangeSearch(int begin_key, int end_key) {
+        cout<<"------ Range Search ------"<<endl;
+
         vector<AVLRecord> results;
         fstream file(filename, ios::in | ios::binary);
         if (file) {
@@ -102,6 +110,21 @@ public:
         return results;
     }
 
+    void printPreorder(){
+        cout<<"------ Search Preorder ------"<<endl;
+        fstream file(filename, ios::in | ios::binary);
+        getPreorder(file, root); // Donde "root" es la posición del nodo raíz del árbol.
+        file.close();
+    }
+
+    void printInorder() {
+        cout<<"------ Search Inorder ------"<<endl;
+        ifstream file(filename, ios::in | ios::binary);
+        getInorder(file, root); // Donde "root" es la posición del nodo raíz del árbol.
+        file.close();
+    }
+
+    
 private:
     // FUNCTIONS TO USE
 
@@ -136,6 +159,11 @@ private:
     AVLFile::NodeBT find_predecessor(std::fstream& file, long& record_pos, NodeBT& predecessor);
     
     AVLFile::NodeBT find_max(std::fstream& file, long record_pos);
+
+    void getPreorder(std::fstream &file, long node);
+
+    void getInorder(std::ifstream& file, long node);
+
 };
 
 // ------------------ IMPLEMENTATIONS ------------------
@@ -172,11 +200,11 @@ void AVLFile::insert(std::fstream& file, long& node, AVLRecord& record) {
                 //file.write((char*)&root, sizeof(long));
         } */
         /* this -> root = node; */
-        cout<<"root es: "<<this -> root<<endl;
-        cout<< "Ubicacion a insertar: " << node << endl;       
+        // cout<<"root es: "<<this -> root<<endl;
+        //cout<< "Ubicacion a insertar: " << node << endl;       
         NodeBT newNode(record);
         newNode.pos = node; // Guardamos la posición del registro en el archivo
-        newNode.print_node();
+        //newNode.print_node();
         file.write((char*)&newNode, sizeof(NodeBT)); // Escribimos el nuevo nodo en el archivo
     } else {
         NodeBT currentNode;// Leemos el node actual anterior
@@ -375,15 +403,15 @@ void AVLFile::balance(std::fstream& file, long& node) {
     // Obtenemos las alturas de los subárboles izquierdo y derecho
     long heightLeft = height(file, currentNode.left);
     long heightRight = height(file, currentNode.right);
-    cout<<"hl - hr: (" << heightLeft << ") - (" <<heightRight <<")"<< endl;
+    //cout<<"hl - hr: (" << heightLeft << ") - (" <<heightRight <<")"<< endl;
 
     // Calculamos el factor de balance del nodo actual
     long balanceFactor = heightRight - heightLeft;
-    cout<<"indice: " << balanceFactor<< endl;
+    //cout<<"indice: " << balanceFactor<< endl;
 
     // Si el factor de balance está fuera de los límites (-1, 0, 1), el árbol está desequilibrado
     if (balanceFactor < -1 || balanceFactor > 1) {
-        cout<<"...Balanceamos..."<<endl;
+        //cout<<"...Balanceamos..."<<endl;
         // Si el subárbol derecho es más alto, realizamos una rotación simple o doble hacia la izquierda
         if (balanceFactor > 0) {
             NodeBT rightNode;
@@ -435,6 +463,7 @@ void AVLFile::balance(std::fstream& file, long& node) {
         file.write((char*)&rightChild, sizeof(NodeBT));
     }
 }
+
 void AVLFile::rotateLeft(std::fstream& file, long& node) {
     NodeBT tmpNode = readNode(file, node);
     NodeBT rightNode = readNode(file, tmpNode.right);
@@ -449,6 +478,7 @@ void AVLFile::rotateLeft(std::fstream& file, long& node) {
     writeNode(file, tmpNode.pos, tmpNode);
     node = rightNode.pos;
 }
+
 void AVLFile::rotateRight(std::fstream& file, long& node) {
     NodeBT tmpNode = readNode(file, node);
     NodeBT leftNode = readNode(file, tmpNode.left);
@@ -463,6 +493,7 @@ void AVLFile::rotateRight(std::fstream& file, long& node) {
     writeNode(file, tmpNode.pos, tmpNode);
     node = leftNode.pos;
 }
+
 void AVLFile::writeNode(std::fstream& file, long pos, const NodeBT& node) {
     file.seekp(pos * sizeof(NodeBT));
     file.write(reinterpret_cast<const char*>(&node), sizeof(NodeBT));
@@ -476,6 +507,27 @@ AVLFile::NodeBT AVLFile::readNode(std::fstream& file, long pos) {
     return node;
 }
 
+void AVLFile::getPreorder(std::fstream &file, long node) {
+    if (node != -1) {
+        NodeBT currentNode;
+        file.seekg(node , ios::beg);
+        file.read((char*)&currentNode, sizeof(NodeBT));
+        std::cout << currentNode.data.anime_id << "  -->  ";
+        getPreorder(file, currentNode.left);
+        getPreorder(file, currentNode.right);
+    }
+}
 
+void AVLFile::getInorder(std::ifstream& file, long node) {
+    if (node != -1) {
+        NodeBT currentNode;
+        file.seekg(node);
+        file.read((char*)&currentNode, sizeof(NodeBT));
+
+        getInorder(file, currentNode.left); // 2. Visita el subárbol izquierdo
+        std::cout << currentNode.data.anime_id << " -->  "; // 3. Procesa el nodo actual
+        getInorder(file, currentNode.right); // 4. Visita el subárbol derecho
+    }
+}
 
 #endif //RECORDLECTURE_AVLFILE_H

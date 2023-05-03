@@ -295,12 +295,14 @@ void Interactive_Menu_AVLFile(){
         cout << "4. Search record" << endl;
         cout << "5. Range search record" << endl;
         cout << "6. Show all records" << endl;
+        cout << "7. Print Preorder" << endl;
+        cout << "8. Print Inorder" << endl;
         cout << "0. End" << endl;
 
         cout << "\nEnter an option: ";
         cin >> opcion;
 
-        while (opcion != 0 and opcion != 1 and opcion != 2 and opcion != 3 and opcion != 4 and opcion != 5 and opcion != 6) {
+        while (opcion != 0 and opcion != 1 and opcion != 2 and opcion != 3 and opcion != 4 and opcion != 5 and opcion != 6 and opcion != 7 and opcion != 8) {
             cerr << "\nEnter a valid option";
             cout << "\nEnter an option: ";
             cin >> opcion;
@@ -347,8 +349,7 @@ void Interactive_Menu_AVLFile(){
             ingrese_0_para_salir(opcion);
         }
         break;
-        case 5:
-        {
+        case 5: {
              int key1;int key2;
             cout << "first key:\n";
             cin >> key1;
@@ -365,6 +366,16 @@ void Interactive_Menu_AVLFile(){
         case 6:
         {
             read_binary_avl();
+            ingrese_0_para_salir(opcion);
+        }
+        break;
+        case 7: {
+            avl_file.printPreorder();
+            ingrese_0_para_salir(opcion);
+        }
+        break;
+        case 8: {
+            avl_file.printInorder();
             ingrese_0_para_salir(opcion);
         }
         break;
