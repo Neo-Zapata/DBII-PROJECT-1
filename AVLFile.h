@@ -110,6 +110,20 @@ public:
         return results;
     }
 
+    vector<AVLRecord> rangeSearchRating(int begin_key, int end_key) {
+        cout<<"------ Range Search Rating ------"<<endl;
+
+        vector<AVLRecord> results;
+        fstream file(filename, ios::in | ios::binary);
+        if (file) {
+            rangeSearchRating(file, root, begin_key, end_key, results);
+            file.close();
+        } else {
+            cout << "Error al abrir el archivo " << filename << endl;
+        }
+        return results;
+    }
+
     void printPreorder(){
         cout<<"------ Search Preorder ------"<<endl;
         fstream file(filename, ios::in | ios::binary);
@@ -163,6 +177,8 @@ private:
     void getPreorder(std::fstream &file, long node);
 
     void getInorder(std::ifstream& file, long node);
+
+    void rangeSearchRating(fstream &file, long node, float begin_key, float end_key, vector<AVLRecord> &results);
 
 };
 
@@ -352,6 +368,24 @@ void AVLFile::rangeSearch(fstream &file, long node, int begin_key, int end_key, 
         rangeSearch(file, current.left, begin_key, end_key, results);
     }
     if (current.data.anime_id < end_key) {
+        rangeSearch(file, current.right, begin_key, end_key, results);
+    }
+}
+
+void AVLFile::rangeSearchRating(fstream &file, long node, float begin_key, float end_key, vector<AVLRecord> &results) {
+    if (node == -1) {
+        return;
+    }
+    NodeBT current;
+    file.seekg(node);
+    file.read((char*)&current, sizeof(NodeBT));
+    if (current.data.rating >= begin_key && current.data.rating <= end_key) {
+        results.push_back(current.data);
+    }
+    if (current.data.rating > begin_key) {
+        rangeSearch(file, current.left, begin_key, end_key, results);
+    }
+    if (current.data.rating < end_key) {
         rangeSearch(file, current.right, begin_key, end_key, results);
     }
 }

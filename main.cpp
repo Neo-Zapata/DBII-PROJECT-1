@@ -297,12 +297,13 @@ void Interactive_Menu_AVLFile(){
         cout << "6. Show all records" << endl;
         cout << "7. Print Preorder" << endl;
         cout << "8. Print Inorder" << endl;
+        cout << "9. Range Search Rating" << endl;
         cout << "0. End" << endl;
 
         cout << "\nEnter an option: ";
         cin >> opcion;
 
-        while (opcion != 0 and opcion != 1 and opcion != 2 and opcion != 3 and opcion != 4 and opcion != 5 and opcion != 6 and opcion != 7 and opcion != 8) {
+        while (opcion != 0 and opcion != 1 and opcion != 2 and opcion != 3 and opcion != 4 and opcion != 5 and opcion != 6 and opcion != 7 and opcion != 8 and opcion != 9) {
             cerr << "\nEnter a valid option";
             cout << "\nEnter an option: ";
             cin >> opcion;
@@ -379,6 +380,19 @@ void Interactive_Menu_AVLFile(){
             ingrese_0_para_salir(opcion);
         }
         break;
+        case 9: {
+             float key1;float key2;
+            cout << "first rating key:\n";
+            cin >> key1;
+            
+            cout << "second rating key:\n";
+            cin >> key2;
+            
+            vector<AVLRecord> records = avl_file.rangeSearchRating(key1, key2);
+            for (AVLRecord rec : records)
+                cout<<rec;
+            ingrese_0_para_salir(opcion);
+        }
         case 0:
         {
             repetir = false;
