@@ -5,29 +5,31 @@
 
 class Record{
 public:
+    int anime_id;
     char key[KEY_SIZE];
     char type[TYPE_SIZE];
-    int total;
-    int generation;
-    int legendary;
+    char episodes[EPISODE_SIZE];
+    float rating;
+    int members;
     Pos prev;
     Pos next;
     bool is_deleted = 0;
 
     Record(){
+        anime_id = 0;
         memset(key, ' ', KEY_SIZE - 1);
         memset(type, ' ', TYPE_SIZE - 1);
-        total = 0;
-        generation = 0;
-        legendary = 0;
+        memset(episodes, ' ', EPISODE_SIZE - 1);
+        rating = 0;
+        members = 0;
         prev = Pos(-1, 'D');
         next = Pos(-1, 'D');
         is_deleted = 0;
     }
 
     void show(){
-        cout << "> " << key << "|" << int(prev.pos) << "-" << prev.file << "|" << int(next.pos) << "-" << next.file << "|" << type << "|" << total << "|" << generation << "|" << legendary << "\n";
-        // cout << "> " << anime_id << "|" << key << "|" << int(prev.pos) << "-" << prev.file << "|" << int(next.pos) << "-" << next.file << "|" << type << "|" << episodes << "|" << rating << "|" << members << "\n";
+        // cout << "> " << key << "|" << int(prev.pos) << "-" << prev.file << "|" << int(next.pos) << "-" << next.file << "|" << type << "|" << total << "|" << generation << "|" << legendary << "\n";
+        cout << "> " << anime_id << "|" << key << "|" << int(prev.pos) << "-" << prev.file << "|" << int(next.pos) << "-" << next.file << "|" << type << "|" << episodes << "|" << rating << "|" << members << "\n";
     }
 
     void set_key(string new_key){
@@ -40,8 +42,12 @@ public:
 
     void set_data(){
         cin.ignore();
-        // string anime_id, key, type, episodes, rating, members;
-        string key, type, total, generation, legendary;
+        string anime_id, key, type, episodes, rating, members;
+        // string key, type, total, generation, legendary;
+
+        cout << "anime id: ";
+        getline(cin, anime_id);
+        this->anime_id = stoi(anime_id);
         
         cout << "key (pokemon name): ";
         getline(cin, key);
@@ -55,17 +61,18 @@ public:
         strncpy(this->type, type.c_str(), TYPE_SIZE - 1);
         this->type[TYPE_SIZE - 1] = '\0';
 
-        cout << "total: ";
-        getline(cin, total);
-        this->total = stoi(total);
+        cout << "Episodes: ";
+        getline(cin, episodes);
+        strncpy(this->episodes, episodes.c_str(), EPISODE_SIZE - 1);
+        this->episodes[EPISODE_SIZE - 1] = '\0';
 
-        cout << "generation: ";
-        getline(cin, generation);
-        this->generation = stoi(generation);
+        cout << "members: ";
+        getline(cin, members);
+        this->members = stof(members);
 
-        cout << "legendary: ";
-        getline(cin, legendary);
-        this->legendary = stoi(legendary);
+        cout << "rating: ";
+        getline(cin, rating);
+        this->rating = stoi(rating);
 
         this->prev = Pos(-1, 'D');
         this->next = Pos(-1, 'D');

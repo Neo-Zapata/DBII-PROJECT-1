@@ -1,5 +1,7 @@
 #include "sequential.h"
 #include "libs.h"
+#include "parse.h"
+#include <chrono>
 
 void Clear(){
     cout << "\x1B[2J\x1B[H";
@@ -13,8 +15,139 @@ void ingrese_0_para_salir(int& opcion){
     } while(opcion != 0);
 }
 
+void Interactive_Menu_ExtendibleHash()
+{
+    extendible_hash ext_hash(16, "index.dat", "data.dat");
+    int opcion;
+    bool repetir = true;
+
+    do
+    {
+        Clear();
+        cout << "\n\n        Menu " << endl;
+        cout << "--------------------" << endl;
+        cout << "1. Load .csv" << endl;
+        cout << "2. Add record" << endl;
+        cout << "3. Remove record" << endl;
+        cout << "4. Search record" << endl;
+        cout << "5. Show all records" << endl;
+        cout << "0. End" << endl;
+
+        cout << "\nEnter an option: ";
+        cin >> opcion;
+
+        while (opcion != 0 and opcion != 1 and opcion != 2 and opcion != 3 and opcion != 4 and opcion != 5)
+        {
+            cerr << "\nEnter a valid option";
+            cout << "\nEnter an option: ";
+            cin >> opcion;
+        }
+
+        switch (opcion)
+        {
+        case 1:
+        {
+            ext_hash.memory_accesses = 0;
+            string n;
+            cout << "How many records you want to load? (0 if all)\n";
+            cin.ignore();
+            getline(cin, n);
+            if (n == "0")
+            {
+                auto start = std::chrono::high_resolution_clock::now();
+                read_dataset("animedata2.csv", ext_hash);
+                auto end = std::chrono::high_resolution_clock::now();
+                std::chrono::duration<double> duration = end - start;
+                cout << "\nSecondary memory accesses are: " << ext_hash.memory_accesses << "\n";
+                cout << "ADD: Elapsed time: " << duration.count() << " segundos"
+                     << "\n";
+            }
+            else
+            {
+                auto start = std::chrono::high_resolution_clock::now();
+                read_dataset_until("animedata2.csv", ext_hash, stoi(n));
+                auto end = std::chrono::high_resolution_clock::now();
+                std::chrono::duration<double> duration = end - start;
+                cout << "\nSecondary memory accesses are: " << ext_hash.memory_accesses << "\n";
+                cout << "ADD: Elapsed time:  " << duration.count() << " seconds"
+                     << "\n";
+            }
+        }
+        break;
+        case 2:
+        {
+            ext_hash.memory_accesses = 0;
+            Record_h record;
+            record.set_data();
+            auto start = std::chrono::high_resolution_clock::now();
+            ext_hash.insert_record(record);
+            auto end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double> duration = end - start;
+            cout << "\nSecondary memory accesses are: " << ext_hash.memory_accesses << "\n";
+            cout << "ADD: Elapsed time:  " << duration.count() << " seconds"
+                 << "\n";
+            ingrese_0_para_salir(opcion);
+        }
+        break;
+        case 3:
+        {
+            ext_hash.memory_accesses = 0;
+            string key;
+            cout << "Insert key to remove:";
+            cin.ignore();
+            getline(cin, key);
+            auto start = std::chrono::high_resolution_clock::now();
+            cout << ext_hash.delete_record(stoi(key)) << endl;
+            auto end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double> duration = end - start;
+            cout << "\nSecondary memory accesses are: " << ext_hash.memory_accesses << "\n";
+            cout << "DELETE: Elapsed time:  " << duration.count() << " seconds"
+                 << "\n";
+            ingrese_0_para_salir(opcion);
+        }
+        break;
+        case 4:
+        {
+            ext_hash.memory_accesses = 0;
+            string key;
+            cout << "Insert key to search:\n";
+            cin.ignore();
+            getline(cin, key);
+            Record_h searched;
+            auto start = std::chrono::high_resolution_clock::now();
+            ext_hash.search_record(stoi(key), searched);
+            searched.showData();
+            auto end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double> duration = end - start;
+
+            cout << "\nSecondary memory accesses are: " << ext_hash.memory_accesses << "\n";
+            cout << "SEARCH: Elapsed time:  " << duration.count() << " seconds"
+                 << "\n";
+            ingrese_0_para_salir(opcion);
+        }
+        break;
+        case 5:
+        {
+            ext_hash.print_all();
+            ingrese_0_para_salir(opcion);
+        }
+        break;
+        case 0:
+        {
+            repetir = false;
+        }
+        break;
+        default:
+        {
+            cout << "\nInvalid option.";
+        }
+        break;
+        }
+    } while (repetir);
+}
+
 void Interactive_Menu_SequentialFile(){
-    SequentialFile SF("Pokemon.csv");
+    SequentialFile SF("animedata.csv");
     int opcion;
     bool repetir = true;
 
@@ -41,7 +174,15 @@ void Interactive_Menu_SequentialFile(){
 
         switch (opcion) {
             case 1:{
-                SF.load();
+                string n;
+                cout << "How many records you want to load? (0 if all)\n";
+                cin.ignore();
+                getline(cin, n);
+                std::clock_t start = std::clock();
+                SF.load(stoi(n));
+                std::clock_t end = std::clock();
+                double elapsed_time = double(end - start) / CLOCKS_PER_SEC;
+                std::cout << "ADD: Elapsed time: " << elapsed_time << " seconds" << std::endl;
                 ingrese_0_para_salir(opcion);
             }break;
             case 2:{
@@ -55,7 +196,11 @@ void Interactive_Menu_SequentialFile(){
                 cout << "Insert key to remove:";
                 cin.ignore();
                 getline(cin, key);
+                std::clock_t start = std::clock();
                 cout << SF.remove(key) << endl;
+                std::clock_t end = std::clock();
+                double elapsed_time = double(end - start) / CLOCKS_PER_SEC;
+                std::cout << "REMOVE: Elapsed time: " << elapsed_time << " seconds" << std::endl;
                 ingrese_0_para_salir(opcion);
             }break;
             case 4:{
@@ -65,7 +210,11 @@ void Interactive_Menu_SequentialFile(){
                 // cin >> key;
                 cin.ignore();
                 getline(cin, key);
+                std::clock_t start = std::clock();
                 vector<Record> records = SF.search(key);
+                std::clock_t end = std::clock();
+                double elapsed_time = double(end - start) / CLOCKS_PER_SEC;
+                std::cout << "SEARCH: Elapsed time: " << elapsed_time << " seconds" << std::endl;
                 for(Record rec : records)
                     rec.show();
                 ingrese_0_para_salir(opcion);
@@ -102,10 +251,52 @@ void Interactive_Menu_SequentialFile(){
     } while (repetir);
 }
 
+void MMENU(){
+    int opcion;
+    bool repetir = true;
+
+    do {
+        Clear();
+        cout << "\n\n        Menu " << endl;
+        cout << "--------------------"<<endl;
+        cout << "1. Sequential Indexing" << endl;
+        cout << "2. Hash Indexing" << endl;
+        cout << "3. AVL Tree" << endl;
+        cout << "0. End" << endl;
+
+        cout << "\nEnter an option: ";
+        cin >> opcion;
+
+        while(opcion != 0 and opcion != 1 and opcion != 2 and opcion != 3){
+            cerr << "\nEnter a valid option";
+            cout << "\nEnter an option: ";
+            cin >> opcion;
+        }
+
+        switch (opcion) {
+            case 1:{
+                Interactive_Menu_SequentialFile();
+            }break;
+            case 2:{
+                Interactive_Menu_ExtendibleHash();
+            }break;
+            case 3:{
+                cout << "Work in progress" << endl;
+            }break;
+            case 0:{
+                repetir = false;
+            }break;
+            default:{
+                cout << "\nInvalid option.";
+            }break;
+        }
+    } while (repetir);
+}
+
 
 int main(){
     try {
-        Interactive_Menu_SequentialFile();
+        MMENU();
     } catch (const exception& e){
         cerr << "\nError - " << e.what() << endl;
     }

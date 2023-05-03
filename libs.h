@@ -12,10 +12,14 @@
 #include <cctype>
 #include <iterator>
 #include <cstdio>
+#include <ctime>
 using namespace std;
 
-#define KEY_SIZE 30
-#define TYPE_SIZE 10
+// #define KEY_SIZE 30
+#define KEY_SIZE 103
+// #define TYPE_SIZE 10
+#define TYPE_SIZE 15
+#define EPISODE_SIZE 10
 
 class Pos{
     public:

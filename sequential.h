@@ -86,14 +86,16 @@ public:
         ffile.close();
     }
 
-    void load(){
+    void load(int n_to_read){
         this->disk_accesses = 0;
 
         // if(this->is_loaded){
         //     cerr << "Data is already loaded - load()\n";
         //     return;
         // }
-        
+        if(n_to_read == 0)
+            n_to_read = 1000000000;
+        int counter = 0;
         string line;
         ifstream ffile("dataset/" + this->dataset, ios::binary);
 
@@ -101,41 +103,59 @@ public:
             throw file_not_found("Could not open file - load()\n");
 
         // string key, mpg, cylinders, displacement, horsepower, weight, acceleration, model, origin;
-        // string anime_id, key, type, episodes, rating, members;
-        string key, type, total, generation, legendary;
+        string anime_id, key, type, episodes, rating, members;
+        string first_, second_;
+        // string key, type, total, generation, legendary;
 
         getline(ffile, line); // column names
         this->disk_accesses++;
         
         while(getline(ffile, line)){
-
+            counter++;
             this->disk_accesses++;
             Record record;
             stringstream ss(line);
 
-            getline(ss, key, ',');
-            for (char& c : key) {
-                c = tolower(c);
-            }
-            strncpy(record.key, key.c_str(), KEY_SIZE - 1);
-            record.key[KEY_SIZE - 1] = '\0';
+            getline(ss, anime_id, ',');
+            record.anime_id = stoi(anime_id);
             // record.show();
+
+            if(ss.peek() == '"'){
+                getline(ss, first_, '"');
+                getline(ss, key, '"');
+                for (char& c : key) {
+                    c = tolower(c);
+                }
+                strncpy(record.key, key.c_str(), KEY_SIZE - 1);
+                record.key[KEY_SIZE - 1] = '\0';
+                // record.show();
+                getline(ss, second_, ',');
+            } else {
+                getline(ss, key, ',');
+                for (char& c : key) {
+                    c = tolower(c);
+                }
+                strncpy(record.key, key.c_str(), KEY_SIZE - 1);
+                record.key[KEY_SIZE - 1] = '\0';
+                // record.show();
+            }
 
             getline(ss, type, ',');
             strncpy(record.type, type.c_str(), TYPE_SIZE - 1);
             record.type[TYPE_SIZE - 1] = '\0';
             // record.show();
 
-            getline(ss, total, ',');
-            record.total = stoi(total);
+            getline(ss, episodes, ',');
+            strncpy(record.episodes, episodes.c_str(), EPISODE_SIZE - 1);
+            record.episodes[EPISODE_SIZE - 1] = '\0';
             // record.show();
 
-            getline(ss, generation, ',');
-            record.generation = stoi(generation);
+            getline(ss, rating, ',');
+            record.rating = stof(rating);
             // record.show();
 
-            getline(ss, legendary, ',');
-            record.legendary = stoi(legendary);
+            getline(ss, members, ',');
+            record.members = stoi(members);
             // record.show();
 
             if(file_is_empty(this->filename)){
@@ -151,6 +171,9 @@ public:
             } else {
                 add_record(record, false);
             }
+            if(counter >= n_to_read)
+                break;
+
         }
         cout << "There was a total of " << this->disk_accesses << " accesses to disk in load() -> O(n)\n";
         ffile.close();
@@ -372,10 +395,11 @@ public:
         int left = 0;
         int right = get_n_records(this->filename) - 1;
         int last_record = right;
-
-        int mid = 0;
+        // cout << "right: " << right << endl;
+        int mid = floor((left + right) / 2);
         while(left <= right) {
             mid = floor((left + right) / 2);
+            // cout << "mid: " << mid << endl;
             ffile.seekg(mid * RECORD_SIZE, ios::beg);
             Record traverse;
             ffile.read((char *)(&traverse), RECORD_SIZE);
@@ -383,16 +407,16 @@ public:
             if(traverse == record){
                 // if we are adding, this case is probably never met (but it still works if we insert the same key twice)
                 break;
-            } else if(traverse < record){
+            } else if(traverse > record){
                 left = mid + 1;
-                if(mid == 0){
-                    break;
-                }
+                // if(mid == 0){
+                //     break;
+                // }
             } else {
                 right = mid - 1;
-                if(mid == last_record){
-                    break;
-                }
+                // if(mid == last_record){
+                //     break;
+                // }
             }
         }
         final_pos.pos = mid * RECORD_SIZE;
@@ -401,7 +425,7 @@ public:
         return final_pos;
     }
 
-    Pos look_prevs(Pos start_p, Record record){
+    Pos look_prevs(Pos start_p, Record record, Pos& begin){
 
         fstream ffile("files/" + this->filename, ios::binary | ios::in | ios::out);
         fstream auxfile("files/" + this->aux_file, ios::binary | ios::in | ios::out);
@@ -413,8 +437,9 @@ public:
             throw file_not_found("Could not open auxiliar file - add_record()\n");
 
         Pos fin;
-        Pos iter_pos = start_p;
-        Record traverse = read_record_by_pos(iter_pos);
+        // Pos iter_pos = start_p;
+        begin = start_p;
+        Record traverse = read_record_by_pos(begin);
 
         // cout << record.key << " viene antes de " << traverse.key << " ? " << (record > traverse) << endl;
         
@@ -427,8 +452,8 @@ public:
                     return fin;
                 }
                 // cout << "PODEMOS AVANZAR EN LOOK PREVS" << endl;
-                iter_pos = traverse.prev;
-                traverse = read_record_by_pos(iter_pos);
+                begin = traverse.prev;
+                traverse = read_record_by_pos(begin);
                 // iter_pos = traverse.next;
                 // throw ayudame_Dios("??1");
                 // cout << record.key << " viene antes de " << traverse.key << " ? " << (record > traverse) << endl;
@@ -443,7 +468,7 @@ public:
         return fin;
     }
 
-    Pos look_nexts(Pos start_p, Record record){
+    Pos look_nexts(Pos start_p, Record record, Pos& begin){
 
         fstream ffile("files/" + this->filename, ios::binary | ios::in | ios::out);
         fstream auxfile("files/" + this->aux_file, ios::binary | ios::in | ios::out);
@@ -455,8 +480,9 @@ public:
             throw file_not_found("Could not open auxiliar file - add_record()\n");
 
         Pos fin;
-        Pos iter_pos = start_p;
-        Record traverse = read_record_by_pos(iter_pos);
+        // Pos iter_pos = start_p;
+        begin = start_p;
+        Record traverse = read_record_by_pos(begin);
         
         // cout << record.key << " viene despues de " << traverse.key << " ? " << (record < traverse) << endl;
         
@@ -470,13 +496,13 @@ public:
                     return fin;
                 }
                 // cout << "PODEMOS AVANZAR EN LOOK NEXTS" << endl;
-                iter_pos = traverse.next;
+                begin = traverse.next;
                 
-                traverse = read_record_by_pos(iter_pos);
+                traverse = read_record_by_pos(begin);
                 
                 // cout << record.key << " viene despues de " << traverse.key << " ? " << (record < traverse) << endl;
             } while(record < traverse);
-            fin = iter_pos;
+            fin = begin;
         } else { // no podemos avanzar
             // cout << "NO PODEMOS AVANZAR EN LOOK NEXTS" << endl;
             fin = Pos(-1, 'X'); // the X means we cannot look forward
@@ -495,11 +521,9 @@ public:
 
         if(!auxfile.is_open())
             throw file_not_found("Could not open auxiliar file - add_record()\n");
-
         Pos near_position = pos_binary_search(record);
         // mid is the possible closest candidate, but we look for its prev and next to confirm this.
 
-        // near_position.show();
         Pos final_pos_to_insert;
         Pos possible_final_pos_1;
         Pos possible_final_pos_2;
@@ -509,11 +533,16 @@ public:
 
         Record near_record = read_record_by_pos(near_position);
 
-        possible_final_pos_1 = look_prevs(near_position, record);
-        possible_final_pos_2 = look_nexts(near_position, record);
+        Pos pos_beg_1, pos_beg_2;
+        possible_final_pos_1 = look_prevs(near_position, record, pos_beg_1);
+        possible_final_pos_2 = look_nexts(near_position, record, pos_beg_1);
 
         // possible_final_pos_1.show();
         // possible_final_pos_2.show();
+        // cout << "--------" << endl;
+        // pos_beg_1.show();
+        // pos_beg_2.show();
+        // cout << "-" << endl;
 
         if(possible_final_pos_2.file == 'X' and possible_final_pos_1.file == 'X'){
             throw ayudame_Dios("Que esta pasando aqui?");
@@ -524,8 +553,10 @@ public:
 
         if(possible_final_pos_1.file == 'X'){
             final_pos_to_insert = possible_final_pos_2;
+            begin = pos_beg_1;
         } else {
             final_pos_to_insert = possible_final_pos_1;
+            begin = pos_beg_2;
         }
 
         if(final_pos_to_insert == get_start_pos()){
@@ -540,7 +571,12 @@ public:
             auxfile.seekg(0, ios::end);
             mid = Pos(auxfile.tellg(), 'A');
             end = mid;
-            begin = get_last_pos_from(near_position);
+            // begin already calculated
+            // Pos x_begin = get_last_pos_from(near_position);
+            // begin.show();
+            // x_begin.show();
+            // begin = x_begin;
+            // begin = get_last_pos_from(near_position);
         } else {
             // cout << "IT IS A MID POSITION" << endl;
             Record end_record = read_record_by_pos(final_pos_to_insert);
@@ -737,6 +773,7 @@ public:
     }
 
     bool remove(string key){
+        std::clock_t start_time = std::clock();
         this->disk_accesses = 0;
 
         Record temp;
@@ -803,10 +840,14 @@ public:
         // end_record.show();
 
         cout << "There was a total of " << this->disk_accesses << " accesses to disk in remove()\n";
+        std::clock_t end_time = std::clock();
+        double elapsed_time = double(end_time - start_time) / CLOCKS_PER_SEC;
+        // std::cout << "REMOVED: Elapsed time: " << elapsed_time << " seconds" << std::endl;
         return true;
     }
 
     vector<Record> search(string key){
+        std::clock_t start_time = std::clock();
         this->disk_accesses = 0;
         vector<Record> records;
         Record rec;
@@ -832,7 +873,7 @@ public:
         // answer == ford fiesta, ford impala, etc.
         // best_candidate.show();
         Record candidate = read_record_by_pos(best_candidate);
-
+        // candidate.show();
         vector<Record> before;
         vector<Record> after;
 
@@ -865,6 +906,9 @@ public:
 
         infile.close();
         cout << "There was a total of " << this->disk_accesses << " accesses to disk in search()\n";
+        std::clock_t end_time = std::clock();
+        double elapsed_time = double(end_time - start_time) / CLOCKS_PER_SEC;
+        // std::cout << "SEARCH: Elapsed time: " << elapsed_time << " seconds" << std::endl;
         return records;
     }
 
@@ -899,7 +943,7 @@ public:
                         break;
                 }
                 posi = traverse.prev;
-            } while(traverse.prev.pos != -1);
+            } while((string(traverse.key).find(key) != string::npos or key_record > traverse) and traverse.prev.pos != -1);
         } else {
             // cout << "range oop" << endl;
             // agregar todos hasta que traverse venga antes de key o hasta qwu traverse.prev = -1
@@ -947,7 +991,7 @@ public:
                         break;
                 }
                 posi = traverse.next;
-            } while(traverse.next.pos != -1);
+            } while((key_record < traverse or string(traverse.key).find(key) != string::npos) and traverse.next.pos != -1);
         } else {
             // cout << "range oop" << endl;
             // agregar todos hasta que traverse venga despues de key o hasta qwu traverse.next = -1
