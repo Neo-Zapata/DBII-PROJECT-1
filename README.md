@@ -170,6 +170,18 @@ El método de eliminación es similar al método de inserción, ya que intername
 <br />
 El coeficiente de correlación de pearson ajustado para una tendencia lineal es de 0.999, lo cual apunta a que el número de accesos a memoria en la inserción de records es lineal respecto al número de records que se busca insertar.
 
+<strong>Búsqueda</strong>
+<br />
+<img src="/images/ext_h_07.png"  width="65%">
+<br />
+El número de accesos de memoria en la búsqueda de un record es constante respecto a la cantidad de registros que se tenga. La tabla_hash interna que se maneja nos permite dar directamente con el bucket del key_id del registro que buscamos. Se recorre una cantidad k de buckets encadenados de no estar en el bucket principal. Siendo ese k el número de accesos a memoria, el cual se repetirá siempre que se busque el mismo record independientemente de la cantidad de records en la base de datos.
+
+<strong>Eliminación</strong>
+<br />
+<img src="/images/ext_h_08.png"  width="65%">
+<br />
+El delete maneja internamente el search para encontrar el record a eliminar y una secuencia de instrucciones adicional que no requiere adicionales accesos a memoria, por lo tanto, el número de accesos de memoria en la eliminación de un record es constante respecto a la cantidad de registros que se tenga.
+
 
 ## Pruebas de uso y presentacion
 Adjuntar fotos, videos, etc. Mostrando la funcionalidad del programa
