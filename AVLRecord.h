@@ -28,34 +28,44 @@ public:
     int episodes;
     float rating;
     int members;
+    
+    void set_data()
+    {
+        cin.ignore();
+        string anime_id, name, type, episodes, rating, members;
+        // string key, type, total, generation, legendary;
 
-    void set_data(){
-        string name, type;
+        cout << "anime id: ";
+        getline(cin, anime_id);
+        this->anime_id = stoi(anime_id);
 
-        cout << "ID del anime: ";
-        cin >> anime_id;
-
-        cout << "Nombre del anime: ";
+        cout << "Anime name: ";
         getline(cin, name);
-        strncpy(this->name, name.c_str(), NAME_SIZE -1);
-        this->name[NAME_SIZE - 1] = '\0';
-        
-        cout << "Tipo de anime: ";
+        for (char &c : name)
+            c = tolower(c);
+        strncpy(this->name, name.c_str(), 110 - 1);
+        this->name[110 - 1] = '\0';
+
+        cout << "type: ";
         getline(cin, type);
-        strncpy(this->type, type.c_str(), TYPE_SIZ_E - 1);
-        this->name[TYPE_SIZ_E - 1] = '\0';
+        strncpy(this->type, type.c_str(), 14 - 1);
+        this->type[14 - 1] = '\0';
 
-        cout << "Número de episodios: ";
-        cin>> episodes;
+        cout << "Episodes: ";
+        
+        getline(cin, episodes);
+        this->episodes = stoi(episodes);
 
-        cout << "Rating: ";
-        cin >> rating;
+        cout << "rating: ";
+        getline(cin, rating);
+        this->rating = std::stof(rating);
 
-        cout << "Número de miembros: ";
-        cin >> members;
+
+        cout << "members: ";        
+        getline(cin, members);
+        this->members = stoi(members);
 
     }
-    
     void get_data (){
         cout<<anime_id << " | " << name << " | " << type << " | " << episodes << " | " << rating << " | " << members<<endl;
     }
