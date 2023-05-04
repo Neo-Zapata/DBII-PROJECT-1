@@ -134,17 +134,14 @@ Realiza la búsqueda de un registro en función de su key_id. Pasamos el key_id 
 #### Gráficas y análisis
 ##### Inserción
 <img src="/images/ext_h_03.png"  width="65%">
-<br />
 El coeficiente de correlación de pearson ajustado para una tendencia lineal es de 0.953, lo cual apunta a que el tiempo de inserción de records es lineal respecto al número de records que se busca insertar.
 
 ##### Búsqueda
 <img src="/images/ext_h_04.png"  width="65%">
-<br />
 El coeficiente de correlación de pearson ajustado para una tendencia lineal es de 0.0.038, lo cual apunta a que el método de inserción de records no es lineal respecto al número de records que se busca insertar. Así mismo se buscó ajustar a tendencias exponenciales, logarítmicas y polinómicas, sin éxito, obteniéndose un valor de coeficiente bajo. Aquello era algo esperado, ya que la búsqueda no depende de la cantidad de datos insertados. La búsqueda se apoya de una tabla hash, la cual otorga acceso directo al bucket del key_id del registro buscado. Por lo tanto el tiempo de búsqueda tiene una tendencia constante.
 
 ##### Eliminación
 <img src="/images/ext_h_05.png"  width="65%">
-<br />
 El método de eliminación es similar al método de inserción, ya que internamente tambien hace una búsqueda. Trabaja sobre una tabla hash, la cual otorga acceso directo al bucket del key_id del registro buscado. Y al eliminar solo cambia la posición de dos registros y actualiza el size del bucket. Por lo tanto el tiempo de eliminación tiene una tendencia constante.
 
 #### Accesos a disco
@@ -163,17 +160,14 @@ El método de eliminación es similar al método de inserción, ya que intername
 #### Gráficas y análisis
 ##### Inserción
 <img src="/images/ext_h_06.png"  width="65%">
-<br />
 El coeficiente de correlación de pearson ajustado para una tendencia lineal es de 0.999, lo cual apunta a que el número de accesos a memoria en la inserción de records es lineal respecto al número de records que se busca insertar.
 
 ##### Búsqueda
 <img src="/images/ext_h_07.png"  width="65%">
-<br />
 El número de accesos de memoria en la búsqueda de un record es constante respecto a la cantidad de registros que se tenga. La tabla_hash interna que se maneja nos permite dar directamente con el bucket del key_id del registro que buscamos. Se recorre una cantidad k de buckets encadenados de no estar en el bucket principal. Siendo ese k el número de accesos a memoria, el cual se repetirá siempre que se busque el mismo record independientemente de la cantidad de records en la base de datos.
 
 ##### Eliminación
 <img src="/images/ext_h_08.png"  width="65%">
-<br />
 El delete maneja internamente el search para encontrar el record a eliminar y una secuencia de instrucciones adicional que no requiere adicionales accesos a memoria, por lo tanto, el número de accesos de memoria en la eliminación de un record es constante respecto a la cantidad de registros que se tenga.
 
 
