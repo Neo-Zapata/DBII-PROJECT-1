@@ -132,7 +132,7 @@ Realiza la búsqueda de un registro en función de su key_id. Pasamos el key_id 
 |4.500|1,3454|0,00037787  |0,00010833 |
 |5.000|1,2573|0,00034147	|0,00007858	|
 #### Gráficas
-![Alt Text](/images/ext_h_03.png)
+<img src="/images/ext_h_03.png"  width="60%">
 ![Alt Text](/images/ext_h_04.png)
 ![Alt Text](/images/ext_h_05.png)
 
