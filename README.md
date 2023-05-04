@@ -34,15 +34,17 @@ El registro a buscar puede o no estar en el `DataFile`. Sea el caso que sea, sab
 ![Alt Text](/images/pointers3.png)
 ### Extendible hashing
 El extendible hash es una estructura de almacenamiento dinámico. Consta de 3 elementos importantes, registros, buckets y el hash table. Los registros son un conjunto de información relacionada los cuales se encuentran en un inicio en el archivo dataset y posteriormente en buckets, estructuras de almacenamiento de registros. Así mismo, el hash_table es un conjunto de asociaciones key-value en donde el key es la llave a través del cual se puede llegar al value, valor en específico.  La estructura extendible hash emula el funcionamiento de una base de datos, la organización, accesibilidad y perdurabilidad de los datos. Los archivos index.dat y data.dat me permiten manejar la perdurabilidad de los registros. Dentro de index.dat se almacenan las asociaciones key-value del hash_table mientras que en data.dat buckets de registros.
+![Alt Text](/images/ext_h_01.png)
 
 #### Insercion
 Se encarga de añadir registros a la base de datos. La inserción de registros contempla la existencia de llaves primarias en los registros y la no repetición de los mismos en la base de datos. En ese sentido, al momento de insertar un registro se hace un llamado a la función search. Luego, una vez visto que el registro tiene llave primaria única, se utiliza la función hash para poder ubicar el registro en un bucket correspondiente, mediante la iteración sobre el resultado de la función hash. Es así que, luego de encontrar el bucket correspondiente al registro que se va insertar se hacen verificaciones antes de insertarla. Como cada bucket tiene un factor de bloque, se verifica si el size de ese bucket es menor a dicho factor de bloque, si es así, se inserta normalmente en el array de registros que contiene el bucket. Si no se realiza la siguiente verificación, la cuál consiste en comparar el índice de profundidad Global (El cuál es el primer parámetro en la construcción de nuestra clase) con el índice de profundidad local que posee cada bucket. Si es menor, se procede crear un nuevo bucket, siempre actualizando los índices, es decir también se crea un nuevo bucket, y se procede a insertar los registros en ambos buckets de acuerdo a la función hash. Caso contrario, en el cuál la profundidad global es igual a la profundidad local, se procede a hacer un encadenamiento de un nuevo bucket que será insertado al final, sin olvidarse de actualizar el next del bucket asociado a este.
-
-#### Eliminación
-Realiza la búsqueda de un registro en función de su key_id. Pasamos el key_id por la  función hash, y el valor obtenido lo utilizamos en nuestro hash table para poder localizar la posición lógica del posible bucket con el registro que buscamos. Luego, una vez encontrado el bucket se procede a verificar de manera secuencial cada uno de los registros hasta encontrarlo, caso contrario se buscará en los registros encadenados hasta  que el bucket no tenga ningún encadenamiento
+![Alt Text](/images/ext_h_02.png)
 
 #### Búsqueda
 Se realizan los mismos procedimientos que la búsqueda. Sin embargo, se agrega que luego de encontrarlo se pasa a intercambiar el registro de la posición size-1 del bucket con el de la posición del registro que buscamos. Luego se actualiza el size del bucket en size-=1 y listo.
+
+#### Eliminación
+Realiza la búsqueda de un registro en función de su key_id. Pasamos el key_id por la  función hash, y el valor obtenido lo utilizamos en nuestro hash table para poder localizar la posición lógica del posible bucket con el registro que buscamos. Luego, una vez encontrado el bucket se procede a verificar de manera secuencial cada uno de los registros hasta encontrarlo, caso contrario se buscará en los registros encadenados hasta  que el bucket no tenga ningún encadenamiento
 
 ### tecnica 3
 #### Insercion
@@ -64,7 +66,7 @@ Se realizan los mismos procedimientos que la búsqueda. Sin embargo, se agrega q
 |4.000	|110,6170|	0,12444|	0,13303|
 |4.500	|146,6750	|0,15387|0,14543|
 |5.000	|178,3900|	0,17524|	0,17883    |
-#### Gráficas
+#### Gráficas y análisis
 ![Alt Text](/images/seq_at_wr.png)
 ![Alt Text](/images/seq_st_wr.png)
 ![Alt Text](/images/seq_rt_wr.png)
@@ -96,7 +98,7 @@ Se realizan los mismos procedimientos que la búsqueda. Sin embargo, se agrega q
 |4.000|	0,0004260|	0,0011300|	4,11042|
 |4.500|	0,0005170|	0,0015750|	4,86000|
 |5.000|	0,0005260|	0,0018820|	5,25290  |
-#### Gráficas
+#### Gráficas y análisis
 ![Alt Text](/images/seq_at_r.png)
 ![Alt Text](/images/seq_st_r.png)
 ![Alt Text](/images/seq_rt_r.png)
@@ -129,7 +131,24 @@ Se realizan los mismos procedimientos que la búsqueda. Sin embargo, se agrega q
 |4.000|1,1718|0,00044365	|0,00007669	|
 |4.500|1,3454|0,00037787  |0,00010833 |
 |5.000|1,2573|0,00034147	|0,00007858	|
+#### Gráficas y análisis
+<strong>Inserción</strong>
+<br />
+<img src="/images/ext_h_03.png"  width="65%">
+<br />
+El coeficiente de correlación de pearson ajustado para una tendencia lineal es de 0.953, lo cual apunta a que el tiempo de inserción de records es lineal respecto al número de records que se busca insertar.
 
+<strong>Búsqueda</strong>
+<br />
+<img src="/images/ext_h_04.png"  width="65%">
+<br />
+El coeficiente de correlación de pearson ajustado para una tendencia lineal es de 0.0.038, lo cual apunta a que el método de inserción de records no es lineal respecto al número de records que se busca insertar. Así mismo se buscó ajustar a tendencias exponenciales, logarítmicas y polinómicas, sin éxito, obteniéndose un valor de coeficiente bajo. Aquello era algo esperado, ya que la búsqueda no depende de la cantidad de datos insertados. La búsqueda se apoya de una tabla hash, la cual otorga acceso directo al bucket del key_id del registro buscado. Por lo tanto el tiempo de búsqueda tiene una tendencia constante.
+
+<strong>Eliminación</strong>
+<br />
+<img src="/images/ext_h_05.png"  width="65%">
+<br />
+El método de eliminación es similar al método de inserción, ya que internamente tambien hace una búsqueda. Trabaja sobre una tabla hash, la cual otorga acceso directo al bucket del key_id del registro buscado. Y al eliminar solo cambia la posición de dos registros y actualiza el size del bucket. Por lo tanto el tiempo de eliminación tiene una tendencia constante.
 
 #### Accesos a disco
 | Registros | Inserción | Búsqueda | Eliminación |
@@ -144,18 +163,12 @@ Se realizan los mismos procedimientos que la búsqueda. Sin embargo, se agrega q
 |4.000|24.979|1|2|
 |4.500|27.526|1|2|
 |5.000|30.951|1|2|
-
-
-
-
-
-
-
-
-
-
-
-
+#### Gráficas y análisis
+<strong>Inserción</strong>
+<br />
+<img src="/images/ext_h_06.png"  width="65%">
+<br />
+El coeficiente de correlación de pearson ajustado para una tendencia lineal es de 0.999, lo cual apunta a que el número de accesos a memoria en la inserción de records es lineal respecto al número de records que se busca insertar.
 
 
 ## Pruebas de uso y presentacion
