@@ -164,7 +164,7 @@ El método de eliminación es similar al método de inserción, ya que intername
 |4.500|27.526|1|2|
 |5.000|30.951|1|2|
 #### Gráficas y análisis
-<strong>Inserción</strong>
+##### Inserción
 <br />
 <img src="/images/ext_h_06.png"  width="65%">
 <br />
