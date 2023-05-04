@@ -208,11 +208,15 @@ El delete maneja internamente el search para encontrar el record a eliminar y un
 |1.500|	2,5496|	0,00038| 0,00056|
 |2.000|	4,4233|	0,00040|	0,00057|
 |2.500|	6,8052|	0,00042|	0,00058|
-|3.000|	9,6261|	0,00044|	0,00057|
-|3.500|	13,0061|	0,00042|	0,00056|
-|4.000	|15,1945|	0,00045|	0,00057|
+|3.000|	9,6261|	0,00044|	0,00061|
+|3.500|	13,0061|	0,00042|	0,00058|
+|4.000	|15,1945|	0,00045|	0,00059|
 |4.500	|18,8931|	0,00043|	0,00058|
 |5.000	|23,7170|	0,00041|	0,00057|
+#### Gráficas
+![Alt Text](/images/AVL_add.png)
+![Alt Text](/images/AVL_search.png)
+![Alt Text](/images/AVL_remove.png)
 
 #### Accesos a disco
 | Accesos | Add   | Search(Zipang) | Remove(Zipang) |
