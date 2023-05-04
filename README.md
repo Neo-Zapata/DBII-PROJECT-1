@@ -34,15 +34,17 @@ El registro a buscar puede o no estar en el `DataFile`. Sea el caso que sea, sab
 ![Alt Text](/images/pointers3.png)
 ### Extendible hashing
 El extendible hash es una estructura de almacenamiento dinámico. Consta de 3 elementos importantes, registros, buckets y el hash table. Los registros son un conjunto de información relacionada los cuales se encuentran en un inicio en el archivo dataset y posteriormente en buckets, estructuras de almacenamiento de registros. Así mismo, el hash_table es un conjunto de asociaciones key-value en donde el key es la llave a través del cual se puede llegar al value, valor en específico.  La estructura extendible hash emula el funcionamiento de una base de datos, la organización, accesibilidad y perdurabilidad de los datos. Los archivos index.dat y data.dat me permiten manejar la perdurabilidad de los registros. Dentro de index.dat se almacenan las asociaciones key-value del hash_table mientras que en data.dat buckets de registros.
+![Alt Text](/images/ext_h_01.png)
 
 #### Insercion
 Se encarga de añadir registros a la base de datos. La inserción de registros contempla la existencia de llaves primarias en los registros y la no repetición de los mismos en la base de datos. En ese sentido, al momento de insertar un registro se hace un llamado a la función search. Luego, una vez visto que el registro tiene llave primaria única, se utiliza la función hash para poder ubicar el registro en un bucket correspondiente, mediante la iteración sobre el resultado de la función hash. Es así que, luego de encontrar el bucket correspondiente al registro que se va insertar se hacen verificaciones antes de insertarla. Como cada bucket tiene un factor de bloque, se verifica si el size de ese bucket es menor a dicho factor de bloque, si es así, se inserta normalmente en el array de registros que contiene el bucket. Si no se realiza la siguiente verificación, la cuál consiste en comparar el índice de profundidad Global (El cuál es el primer parámetro en la construcción de nuestra clase) con el índice de profundidad local que posee cada bucket. Si es menor, se procede crear un nuevo bucket, siempre actualizando los índices, es decir también se crea un nuevo bucket, y se procede a insertar los registros en ambos buckets de acuerdo a la función hash. Caso contrario, en el cuál la profundidad global es igual a la profundidad local, se procede a hacer un encadenamiento de un nuevo bucket que será insertado al final, sin olvidarse de actualizar el next del bucket asociado a este.
-
-#### Eliminación
-Realiza la búsqueda de un registro en función de su key_id. Pasamos el key_id por la  función hash, y el valor obtenido lo utilizamos en nuestro hash table para poder localizar la posición lógica del posible bucket con el registro que buscamos. Luego, una vez encontrado el bucket se procede a verificar de manera secuencial cada uno de los registros hasta encontrarlo, caso contrario se buscará en los registros encadenados hasta  que el bucket no tenga ningún encadenamiento
+![Alt Text](/images/ext_h_02.png)
 
 #### Búsqueda
 Se realizan los mismos procedimientos que la búsqueda. Sin embargo, se agrega que luego de encontrarlo se pasa a intercambiar el registro de la posición size-1 del bucket con el de la posición del registro que buscamos. Luego se actualiza el size del bucket en size-=1 y listo.
+
+#### Eliminación
+Realiza la búsqueda de un registro en función de su key_id. Pasamos el key_id por la  función hash, y el valor obtenido lo utilizamos en nuestro hash table para poder localizar la posición lógica del posible bucket con el registro que buscamos. Luego, una vez encontrado el bucket se procede a verificar de manera secuencial cada uno de los registros hasta encontrarlo, caso contrario se buscará en los registros encadenados hasta  que el bucket no tenga ningún encadenamiento
 
 ### tecnica 3
 #### Insercion
@@ -129,7 +131,10 @@ Se realizan los mismos procedimientos que la búsqueda. Sin embargo, se agrega q
 |4.000|1,1718|0,00044365	|0,00007669	|
 |4.500|1,3454|0,00037787  |0,00010833 |
 |5.000|1,2573|0,00034147	|0,00007858	|
-
+#### Gráficas
+![Alt Text](/images/ext_h_03.png)
+![Alt Text](/images/ext_h_04.png)
+![Alt Text](/images/ext_h_05.png)
 
 #### Accesos a disco
 | Registros | Inserción | Búsqueda | Eliminación |
@@ -144,19 +149,8 @@ Se realizan los mismos procedimientos que la búsqueda. Sin embargo, se agrega q
 |4.000|24.979|1|2|
 |4.500|27.526|1|2|
 |5.000|30.951|1|2|
-
-
-
-
-
-
-
-
-
-
-
-
-
+#### Gráficas
+![Alt Text](/images/ext_h_06.png)
 
 ## Pruebas de uso y presentacion
 Adjuntar fotos, videos, etc. Mostrando la funcionalidad del programa
