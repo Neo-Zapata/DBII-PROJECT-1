@@ -66,7 +66,7 @@ Realiza la búsqueda de un registro en función de su key_id. Pasamos el key_id 
 |4.000	|110,6170|	0,12444|	0,13303|
 |4.500	|146,6750	|0,15387|0,14543|
 |5.000	|178,3900|	0,17524|	0,17883    |
-#### Gráficas
+#### Gráficas y análisis
 ![Alt Text](/images/seq_at_wr.png)
 ![Alt Text](/images/seq_st_wr.png)
 ![Alt Text](/images/seq_rt_wr.png)
@@ -98,7 +98,7 @@ Realiza la búsqueda de un registro en función de su key_id. Pasamos el key_id 
 |4.000|	0,0004260|	0,0011300|	4,11042|
 |4.500|	0,0005170|	0,0015750|	4,86000|
 |5.000|	0,0005260|	0,0018820|	5,25290  |
-#### Gráficas
+#### Gráficas y análisis
 ![Alt Text](/images/seq_at_r.png)
 ![Alt Text](/images/seq_st_r.png)
 ![Alt Text](/images/seq_rt_r.png)
@@ -132,9 +132,17 @@ Realiza la búsqueda de un registro en función de su key_id. Pasamos el key_id 
 |4.500|1,3454|0,00037787  |0,00010833 |
 |5.000|1,2573|0,00034147	|0,00007858	|
 #### Gráficas
+<strong>Inserción</strong>
 <img src="/images/ext_h_03.png"  width="65%">
+El coeficiente de correlación de pearson ajustado para una tendencia lineal es de 0.953, lo cual apunta a que el tiempo de inserción de records es lineal respecto al número de records que se busca insertar.
+
+<strong>Búsqueda</strong>
 <img src="/images/ext_h_04.png"  width="65%">
+El coeficiente de correlación de pearson ajustado para una tendencia lineal es de 0.0.038, lo cual apunta a que el método de inserción de records no es lineal respecto al número de records que se busca insertar. Así mismo se buscó ajustar a tendencias exponenciales, logarítmicas y polinómicas, sin éxito, obteniéndose un valor de coeficiente bajo. Aquello era algo esperado, ya que la búsqueda no depende de la cantidad de datos insertados. La búsqueda se apoya de una tabla hash, la cual otorga acceso directo al bucket del key_id del registro buscado. Por lo tanto el tiempo de búsqueda tiene una tendencia constante.
+
+<strong>Eliminación</strong>
 <img src="/images/ext_h_05.png"  width="65%">
+El método de eliminación es similar al método de inserción, ya que internamente tambien hace una búsqueda. Trabaja sobre una tabla hash, la cual otorga acceso directo al bucket del key_id del registro buscado. Y al eliminar solo cambia la posición de dos registros y actualiza el size del bucket. Por lo tanto el tiempo de eliminación tiene una tendencia constante.
 
 #### Accesos a disco
 | Registros | Inserción | Búsqueda | Eliminación |
@@ -150,7 +158,10 @@ Realiza la búsqueda de un registro en función de su key_id. Pasamos el key_id 
 |4.500|27.526|1|2|
 |5.000|30.951|1|2|
 #### Gráficas
+<strong>Inserción</strong>
 <img src="/images/ext_h_06.png"  width="65%">
+El coeficiente de correlación de pearson ajustado para una tendencia lineal es de 0.999, lo cual apunta a que el número de accesos a memoria en la inserción de records es lineal respecto al número de records que se busca insertar.
+
 
 ## Pruebas de uso y presentacion
 Adjuntar fotos, videos, etc. Mostrando la funcionalidad del programa
