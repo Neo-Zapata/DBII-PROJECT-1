@@ -15,7 +15,7 @@ istream & operator >> (istream & stream, AVLRecord & p){
     getline(stream, campo,',');
     strncpy(p.name, campo.c_str(), NAME_SIZE -1);
     p.name[NAME_SIZE - 1] = '\0';
-
+    cin.clear();
     getline(stream, campo,',');
     strncpy(p.type, campo.c_str(), TYPE_SIZE -1);
     p.type[TYPE_SIZE - 1] = '\0';
@@ -69,10 +69,10 @@ void read_write_dataset(string filename, string avlfilename, AVLFile& avl_file){
         getline(file, line); // Leemos toda la linea
         while (getline(file, line)){
             //cout<<endl<<"| ------------- " << ++cont << " ------------- |"<<endl;
-            //cout<<endl<<"\nEntra: -> ";
+            cout<<endl<<"\nEntra: -> ";
             stringstream stream(line);
             stream >> anime;
-            //cout<<anime;
+            cout<<anime;
             avl_file.insert(anime);// Insertamos al AVL si es que existe
         }
         cout<<"root final: "; avl_file.getDates();

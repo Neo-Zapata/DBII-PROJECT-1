@@ -39,7 +39,7 @@ public:
         getline(cin, name);
         strncpy(this->name, name.c_str(), NAME_SIZE -1);
         this->name[NAME_SIZE - 1] = '\0';
-
+        
         cout << "Tipo de anime: ";
         getline(cin, type);
         strncpy(this->type, type.c_str(), TYPE_SIZ_E - 1);
