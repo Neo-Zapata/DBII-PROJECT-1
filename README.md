@@ -46,12 +46,42 @@ Se encarga de añadir registros a la base de datos. La inserción de registros c
 Se realizan los mismos procedimientos que la búsqueda. Sin embargo, se agrega que luego de encontrarlo se pasa a intercambiar el registro de la posición size-1 del bucket con el de la posición del registro que buscamos. Luego se actualiza el size del bucket en size-=1 y listo.
 
 #### Eliminación
-Realiza la búsqueda de un registro en función de su key_id. Pasamos el key_id por la  función hash, y el valor obtenido lo utilizamos en nuestro hash table para poder localizar la posición lógica del posible bucket con el registro que buscamos. Luego, una vez encontrado el bucket se procede a verificar de manera secuencial cada uno de los registros hasta encontrarlo, caso contrario se buscará en los registros encadenados hasta  que el bucket no tenga ningún encadenamiento
+Realiza la búsqueda de un registro en función de su key_id. Pasamos el key_id por la  función hash, y el valor obtenido lo utilizamos en nuestro hash table para poder localizar la posición lógica del posible bucket con el registro que buscamos. Luego, una vez encontrado el bucket se procede a verificar de manera secuencial cada uno de los registros hasta encontrarlo, caso contrario se buscará en los registros encadenados hasta  que el bucket no tenga ningún encadenamiento.
 
-### tecnica 3
-#### Insercion
-#### Eliminacion
-#### Busqueda
+### AVL
+El árbol AVL es un tipo de árbol binario de búsqueda equilibrado en el que la altura de los subárboles izquierdo y derecho de cada nodo difiere en no más de uno. Esta propiedad permite que al aplicarlo como técnica de organización de archivos las operaciones de inserción, eliminación y búsqueda se realicen en un tiempo de ejecución O(log n). De esta manera, el AVL se situa como una técnica muy efectiva para la gestión de grandes cantidades de registros en un archivo, y es especialmente útil cuando se requiere un acceso rápido y eficiente a los datos almacenados.
+
+Una desventaja del AVL es que para utilizar los registros en una estructura AVL es necesario hacer uso de espacios de memoria adicionales en los que se almacena las posiciones físicas de los 'nodos hijo' izquierdo y derecho, la posición del registro, y la altura.
+
+#### Inserción
+1. Primero, se verifica si la archivo está vacío (posición del nodo enviado es -1). En tal caso se crea un nuevo nodo que almacene el record que se quiere insertar. El nuevo nodo también debe tener sus demás campos inicializados. Finalmente se escribe el nuevo nodo al archivo AVL.
+
+2. En caso contrario, se compara si el `anime_id` del registro que se quiere insertar es menor o mayor que el `anime_id` del nodo (root) que se pasa en la función. Si el `anime_id` es menor, el registro se inserta en el subárbol izquierdo. Si el `anime_id` es mayor, se inserta en el subárbol derecho. La inserción se realiza de la misma forma que en el paso 1: creando un nuevo nodo y escribiéndolo en el archivo AVL.
+
+3. Con la función balance, se comprueba si el subárbol resultante después de la inserción sigue estando balanceando. En caso contrario, se aplica rotación de izquierda o derecha, según corresponda, para balancear el AVL. Al finalizar el algoritmo, se tendría el root actualizado para una próxima inserción.
+
+#### Eliminación
+1. Primero se verifica si el archivo está vacío, en tal caso, finaliza el algoritmo.
+
+2. Caso contrario, se busca el registro a eliminar. Al encontrar el nodo que corresponde al registro. Se dan los siguientes casos:
+
+  2.1. Si el nodo es una hoja:
+     - Se actualiza la posición del nodo a -1 y se realiza un balance.
+
+  2.2. Si el nodo tiene un hijo:
+    - Se identifica si el nodo hijo es el izquierdo o el derecho, para intercambiar el hijo en la posición del nodo. Posteriormente se realiza un balance.
+
+  2.3. Si el nodo tiene dos hijos:
+    - Se busca el nodo más grande en el subárbol izquierdo del nodo a eliminar y se intercambia lugar con el nodo a eliminar. En esa posición intercambiada se elimina el registro como en 2.1 o 2.2.
+
+#### Búsqueda
+1. Primero se verifica si el archivo está vacío, en tal caso, finaliza el algoritmo.
+
+2. En caso contrario, se compara si el `anime_id` del registro es igual al `anime_id` del nodo (root) que se envía a la función. Si son iguales, se ha encontrado el registro buscado, por lo que se retorna el nodo actual.
+
+3. Si el `anime_id` del registro a buscar es menor que el `anime_id` del nodo actual, se busca por el  subárbol izquierdo. En caso, el `anime_id` del registro a buscar es mayor que el `anime_id` del nodo actual se busca por el subárbol derecho.
+
+4. Se repiten los pasos 2 y 3 hasta encontrar el registro buscado o hasta llegar a una hoja del AVL (es decir, un nodo cuyos campos `left` y `right` sean iguales a -1). Si se ha llegado a una hoja del árbol y no se ha encontrado el registro buscado, se retorna un mensaje indicándolo.
 
 ## Resultados Experimentales
 ### Sequential (without rebuild - worst case - O(log(k) + h))
@@ -171,7 +201,6 @@ El número de accesos de memoria en la búsqueda de un record es constante respe
 ##### Eliminación
 <img src="/images/ext_h_08.png"  width="65%">
 El delete maneja internamente el search para encontrar el record a eliminar y una secuencia de instrucciones adicional que no requiere adicionales accesos a memoria, por lo tanto, el número de accesos de memoria en la eliminación de un record es constante respecto a la cantidad de registros que se tenga.
-
 
 ## Pruebas de uso y presentacion
 Adjuntar fotos, videos, etc. Mostrando la funcionalidad del programa
