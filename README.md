@@ -65,14 +65,11 @@ Una desventaja del AVL es que para utilizar los registros en una estructura AVL 
 
 2. Caso contrario, se busca el registro a eliminar. Al encontrar el nodo que corresponde al registro. Se dan los siguientes casos:
 
-  2.1. Si el nodo es una hoja:
-     - Se actualiza la posición del nodo a -1 y se realiza un balance.
+  2.1. Si el nodo es una hoja: Se actualiza la posición del nodo a -1 y se realiza un balance.
 
-  2.2. Si el nodo tiene un hijo:
-    - Se identifica si el nodo hijo es el izquierdo o el derecho, para intercambiar el hijo en la posición del nodo. Posteriormente se realiza un balance.
+  2.2. Si el nodo tiene un hijo: Se identifica si el nodo hijo es el izquierdo o el derecho, para intercambiar el hijo en la posición del nodo. Posteriormente se realiza un balance.
 
-  2.3. Si el nodo tiene dos hijos:
-    - Se busca el nodo más grande en el subárbol izquierdo del nodo a eliminar y se intercambia lugar con el nodo a eliminar. En esa posición intercambiada se elimina el registro como en 2.1 o 2.2.
+  2.3. Si el nodo tiene dos hijos: Se busca el nodo más grande en el subárbol izquierdo del nodo a eliminar y se intercambia lugar con el nodo a eliminar. En esa posición intercambiada se elimina el registro como en 2.1 o 2.2.
 
 #### Búsqueda
 1. Primero se verifica si el archivo está vacío, en tal caso, finaliza el algoritmo.
@@ -201,6 +198,39 @@ El número de accesos de memoria en la búsqueda de un record es constante respe
 ##### Eliminación
 <img src="/images/ext_h_08.png"  width="65%">
 El delete maneja internamente el search para encontrar el record a eliminar y una secuencia de instrucciones adicional que no requiere adicionales accesos a memoria, por lo tanto, el número de accesos de memoria en la eliminación de un record es constante respecto a la cantidad de registros que se tenga.
+
+### AVL
+#### Tabla de tiempos (s)
+| Iteration | Add   | Search(Zipang) | Remove(Zipang) |
+|-----------|-------|----------------|----------------|
+| 500	|0,3517|	0,00036|	0,00052|
+|1.000|	1,1778|	0,00034|	0,00055|
+|1.500|	2,5496|	0,00038| 0,00056|
+|2.000|	4,4233|	0,00040|	0,00057|
+|2.500|	6,8052|	0,00042|	0,00058|
+|3.000|	9,6261|	0,00044|	0,00061|
+|3.500|	13,0061|	0,00042|	0,00058|
+|4.000	|15,1945|	0,00045|	0,00059|
+|4.500	|18,8931|	0,00043|	0,00058|
+|5.000	|23,7170|	0,00041|	0,00057|
+#### Gráficas
+![Alt Text](/images/AVL_add.png)
+![Alt Text](/images/AVL_search.png)
+![Alt Text](/images/AVL_remove.png)
+
+#### Accesos a disco
+| Accesos | Add   | Search(Zipang) | Remove(Zipang) |
+|-----------|-------|----------------|----------------|
+|500|	126.244|	20|	43|
+|1000|	502.494|	20|	43|
+|1500|	1.128.744|	20|	43|
+|2000|	2.004.994|	20|	43|
+|2500|	3.131.244|	20|	43|
+|3000|	4.507.494|	20|	43|
+|3500|	6.133.744|	20|	44|
+|4000|	8.009.994|	20|	44|
+|4500|	10.136.244|	20|	44|
+|5000|	12.512.494|	20|	44|
 
 ## Pruebas de uso y presentacion
 Adjuntar fotos, videos, etc. Mostrando la funcionalidad del programa
