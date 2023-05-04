@@ -393,10 +393,10 @@ void Interactive_Menu_AVLFile(){
                 cout<<rec;
             ingrese_0_para_salir(opcion);
         }
-        case 0:
+       /*  case 0:
         {
             repetir = false;
-        }
+        } */
         break;
         default:
         {

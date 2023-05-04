@@ -394,10 +394,10 @@ void AVLFile::rangeSearchRating(fstream &file, long node, float begin_key, float
         results.push_back(current.data);
     }
     if (current.data.rating > begin_key) {
-        rangeSearch(file, current.left, begin_key, end_key, results);
+        rangeSearchRating(file, current.left, begin_key, end_key, results);
     }
     if (current.data.rating < end_key) {
-        rangeSearch(file, current.right, begin_key, end_key, results);
+        rangeSearchRating(file, current.right, begin_key, end_key, results);
     }
 }
 
