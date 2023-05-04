@@ -6,6 +6,7 @@
 #define RECORDLECTURE_SETAVLFILE_H
 
 #include "AVLFile.h"
+#include <chrono>
 
 istream & operator >> (istream & stream, AVLRecord & p){
     string campo;
@@ -67,16 +68,30 @@ void read_write_dataset(string filename, string avlfilename, AVLFile& avl_file){
         string line;
         int cont = 0;
         getline(file, line); // Leemos toda la linea
+
+        //std::clock_t start = std::clock();
+        double elapsed = 0;
+        int accesses = 0;
         while (getline(file, line)){
             //cout<<endl<<"| ------------- " << ++cont << " ------------- |"<<endl;
             cout<<endl<<"\nEntra: -> ";
             stringstream stream(line);
             stream >> anime;
             cout<<anime;
+            std::clock_t start = std::clock();
             avl_file.insert(anime);// Insertamos al AVL si es que existe
+            accesses += avl_file.getDiskAccessInsert();
+            std::clock_t end = std::clock();
+            double elapsed_time = double(end - start) / CLOCKS_PER_SEC;
+            elapsed +=elapsed_time;
         }
+
+        //std::clock_t end = std::clock();
+        //double elapsed_time = double(end - start) / CLOCKS_PER_SEC;
+        std::cout << "Insert: Elapsed time: " << elapsed << " seconds" << std::endl;
+        std::cout << "There was a total of " << accesses << " accesses to disk in Insert()\n";
         cout<<"root final: "; avl_file.getDates();
-        cout<<"\nFin de Lectura\n";
+        cout<<"\nFin de Lecturaaaaa\n";
 
     }
     else ayudame_Dios("El archivo ya ha sido llenado inicialmente");

@@ -44,12 +44,18 @@ public:
 
 private:
     long root;
+    int disk_accesses_search;
+    int disk_accesses_insert;
+    int disk_accesses_remove;
     std::string filename;
 
 public:
     AVLFile() : root(-1) {};
     AVLFile(string filename){
         this->filename = filename;
+        this->disk_accesses_search = 0;
+        this->disk_accesses_insert = 0;
+        this->disk_accesses_remove = 0;
         this-> root = -1;
     }
     string getFileName() {
@@ -58,11 +64,22 @@ public:
     void getDates(){
         cout<<root<<endl;
     }
+
+    int getDiskAccessSearch(){
+        return this->disk_accesses_search;
+    }
+    int getDiskAccessInsert(){
+        return this->disk_accesses_insert;
+    }
+    int getDiskAccessRemove(){
+        return this->disk_accesses_remove;
+    }
+
     void set_filename (string filename){ this->filename = filename;}
 
     AVLRecord find(int animeid) {
         cout<<"------ Search ------"<<endl;
-
+        this->disk_accesses_search = 0;
         std::ifstream file(this->filename, std::ios::binary);
         
         cout<<"root que pasa: "<<this->root<<endl;
@@ -74,7 +91,7 @@ public:
 
     void insert(AVLRecord& record) {
         cout<<"------ Insert ------"<<endl;
-
+        this->disk_accesses_insert = 0;
         std::fstream file(this->filename, std::ios::in|std::ios::out|std::ios::binary );
         //insert(file, this->root, record , true);
         insert(file, this->root, record );
@@ -83,7 +100,7 @@ public:
 
     void remove(int anime_id) {
         cout<<"------ Remove ------"<<endl;
-
+        this->disk_accesses_remove = 0;
         std::fstream file(this->filename, std::ios::in|std::ios::out|std::ios::binary );
         remove(file, this -> root, anime_id);
         file.close();
@@ -184,15 +201,15 @@ private:
 // ------------------ IMPLEMENTATIONS ------------------
 
 AVLRecord AVLFile::find(std::ifstream &file, long record_pos, int value){
-    NodeBT temp;
-    file.seekg(record_pos ); // Nos ubicamos en la posición actual
-    file.read((char*)&temp, sizeof(NodeBT));
-
-    if (temp.pos == -1) {
+    if (record_pos == -1) {
         // El archivo está vacío o no se encontró el valor buscado
         cout<<"No se encontro el valor"<<endl;
         return AVLRecord(); // Retorna un registro vacío
     }
+    NodeBT temp;
+    file.seekg(record_pos ); // Nos ubicamos en la posición actual
+    file.read((char*)&temp, sizeof(NodeBT));
+    this->disk_accesses_search++;    
 
     if (value < temp.data.anime_id)
         return find(file, temp.left, value);
@@ -210,6 +227,7 @@ void AVLFile::insert(std::fstream& file, long& root, AVLRecord& record) {
         NodeBT newNode(record);
         newNode.pos = root;
         file.write((char*)&newNode, sizeof(NodeBT));
+        this->disk_accesses_insert++;
         return;
     }
     // Buscamos la posición adecuada para insertar el nuevo nodo
@@ -218,6 +236,7 @@ void AVLFile::insert(std::fstream& file, long& root, AVLRecord& record) {
         NodeBT node;
         file.seekg(node_pos);
         file.read((char*)&node, sizeof(NodeBT));
+        this->disk_accesses_insert++;
         if (record.anime_id == node.data.anime_id) {
             std::cout << "El registro ya existe en el árbol" << std::endl;
             return;
@@ -232,6 +251,7 @@ void AVLFile::insert(std::fstream& file, long& root, AVLRecord& record) {
                 file.seekp(node_pos);
                 file.write((char*)&node, sizeof(NodeBT));
                 file.write((char*)&new_node, sizeof(NodeBT));
+                this->disk_accesses_insert+= 2;
                 break;
             } else {
                 node_pos = node.left;
@@ -247,6 +267,7 @@ void AVLFile::insert(std::fstream& file, long& root, AVLRecord& record) {
                 file.seekp(node_pos);
                 file.write((char*)&node, sizeof(NodeBT));
                 file.write((char*)&new_node, sizeof(NodeBT));
+                this->disk_accesses_insert+= 2;
                 break;
             } else {
                 node_pos = node.right;
@@ -266,6 +287,8 @@ long AVLFile::height(std::fstream& file, long node) {
         NodeBT currentNode;
         file.seekg(node , ios::beg);
         file.read((char*)&currentNode, sizeof(NodeBT));
+        this->disk_accesses_insert++;
+        this->disk_accesses_remove++;
         //cout<<"height: "<<currentNode.height<<endl;
         return currentNode.height; 
     }
@@ -280,6 +303,8 @@ void AVLFile::remove(std::fstream& file, long& record_pos, int value) {
     NodeBT current_node;
     file.seekg(record_pos, std::ios::beg);
     file.read((char*)&current_node, sizeof(NodeBT));
+    this->disk_accesses_remove++;
+
     //current_node.print_node();
     if (value < current_node.data.anime_id) {
         remove(file, current_node.left, value);
@@ -293,12 +318,14 @@ void AVLFile::remove(std::fstream& file, long& record_pos, int value) {
             balance(file, record_pos);
             file.seekp(0, std::ios::beg);
             file.write((char*)&root, sizeof(long));
+            this->disk_accesses_remove++;
         } else if (current_node.left == -1 || current_node.right == -1) {
             // Caso 2: El nodo a eliminar tiene un solo hijo
             record_pos = (current_node.left != -1) ? current_node.left : current_node.right;
             balance(file, record_pos);
             file.seekp(0, std::ios::beg);
             file.write((char*)&root, sizeof(long));
+            this->disk_accesses_remove++;
         } else {
             // Caso 3: El nodo a eliminar tiene dos hijos
             NodeBT predecessor;
@@ -307,6 +334,7 @@ void AVLFile::remove(std::fstream& file, long& record_pos, int value) {
             remove(file, current_node.left, predecessor.data.anime_id);
             file.seekp(record_pos, std::ios::beg);
             file.write((char*)&current_node, sizeof(NodeBT));
+            this->disk_accesses_remove++;
         }
     }
     // Actualizamos la altura del nodo actual
@@ -322,6 +350,7 @@ AVLFile::NodeBT AVLFile::find_predecessor(std::fstream& file, long& record_pos, 
     NodeBT currentNode;
     file.seekg(record_pos); // Nos ubicamos en el nodo actual
     file.read((char*)&currentNode, sizeof(NodeBT));
+    this->disk_accesses_remove++;
 
     // Si hay un subárbol izquierdo, el predecesor es el nodo más grande de ese subárbol
     if (currentNode.left != -1) {
@@ -339,6 +368,7 @@ AVLFile::NodeBT AVLFile::find_predecessor(std::fstream& file, long& record_pos, 
         NodeBT parent;
         file.seekg(parent_pos); // Nos ubicamos en el padre del nodo actual
         file.read((char*)&parent, sizeof(NodeBT));
+        this->disk_accesses_remove++;
         if (parent.right == record_pos) {
             // El nodo actual es el hijo derecho del padre
             // El predecesor es el padre
@@ -355,11 +385,13 @@ AVLFile::NodeBT AVLFile::find_max(std::fstream& file, long record_pos) {
     NodeBT currentNode;
     file.seekg(record_pos); // Nos ubicamos en el nodo actual
     file.read((char*)&currentNode, sizeof(NodeBT));
+    this->disk_accesses_remove++;
 
     while (currentNode.right != -1) {
         // Seguimos bajando por el subárbol derecho
         file.seekg(currentNode.right);
         file.read((char*)&currentNode, sizeof(NodeBT));
+        this->disk_accesses_remove++;
     }
 
     return currentNode;
@@ -401,6 +433,7 @@ void AVLFile::rangeSearchRating(fstream &file, long node, float begin_key, float
     }
 }
 
+/*
 AVLRecord AVLFile::search(std::fstream &file, long& record_pos, int key) {
     if (record_pos == -1)
         throw "El archivo se encuentra vacío";
@@ -417,7 +450,7 @@ AVLRecord AVLFile::search(std::fstream &file, long& record_pos, int key) {
         return search(file, temp.right, key);
     else
         throw "El elemento no fue encontrado";
-}
+}*/
 
 
 
@@ -432,6 +465,8 @@ void AVLFile::balance(std::fstream& file, long& node) {
     NodeBT currentNode;
     file.seekg(node);
     file.read((char*)&currentNode, sizeof(NodeBT));
+    this->disk_accesses_insert++;
+    this->disk_accesses_remove++;
 
     // Obtenemos las alturas de los subárboles izquierdo y derecho
     long heightLeft = height(file, currentNode.left);
@@ -450,6 +485,8 @@ void AVLFile::balance(std::fstream& file, long& node) {
             NodeBT rightNode;
             file.seekg(currentNode.right);
             file.read((char*)&rightNode, sizeof(NodeBT));
+            this->disk_accesses_insert++;
+            this->disk_accesses_remove++;
 
             long heightRightLeft = height(file, rightNode.left);
             long heightRightRight = height(file, rightNode.right);
@@ -465,6 +502,8 @@ void AVLFile::balance(std::fstream& file, long& node) {
             NodeBT leftNode;
             file.seekg(currentNode.left);
             file.read((char*)&leftNode, sizeof(NodeBT));
+            this->disk_accesses_insert++;
+            this->disk_accesses_remove++;
 
             long heightLeftLeft = height(file, leftNode.left);
             long heightLeftRight = height(file, leftNode.right);
@@ -494,6 +533,8 @@ void AVLFile::balance(std::fstream& file, long& node) {
         file.write((char*)&leftChild, sizeof(NodeBT));
         file.seekp(rightChild.pos);
         file.write((char*)&rightChild, sizeof(NodeBT));
+        this->disk_accesses_insert+= 5;
+        this->disk_accesses_remove+= 5;
     }
 }
 
@@ -509,6 +550,8 @@ void AVLFile::rotateLeft(std::fstream& file, long& node) {
     
     writeNode(file, node, rightNode);
     writeNode(file, tmpNode.pos, tmpNode);
+    this->disk_accesses_insert=+4;
+    this->disk_accesses_remove=+4;
     node = rightNode.pos;
 }
 
@@ -524,6 +567,8 @@ void AVLFile::rotateRight(std::fstream& file, long& node) {
     
     writeNode(file, node, leftNode);
     writeNode(file, tmpNode.pos, tmpNode);
+    this->disk_accesses_insert=+4;
+    this->disk_accesses_remove=+4;
     node = leftNode.pos;
 }
 

@@ -319,6 +319,7 @@ void Interactive_Menu_AVLFile(){
             AVLRecord record;
             record.set_data();
             avl_file.insert(record);
+            std::cout << "There was a total of " << avl_file.getDiskAccessInsert() << " accesses to disk in insert()\n";
             ingrese_0_para_salir(opcion);
         }
         break;
@@ -331,6 +332,7 @@ void Interactive_Menu_AVLFile(){
             std::clock_t end = std::clock();
             double elapsed_time = double(end - start) / CLOCKS_PER_SEC;
             std::cout << "REMOVE: Elapsed time: " << elapsed_time << " seconds" << std::endl;
+            std::cout << "There was a total of " << avl_file.getDiskAccessRemove() << " accesses to disk in insert()\n";
             ingrese_0_para_salir(opcion);
         }
         break;
@@ -345,6 +347,7 @@ void Interactive_Menu_AVLFile(){
             std::clock_t end = std::clock();
             double elapsed_time = double(end - start) / CLOCKS_PER_SEC;
             std::cout << "SEARCH: Elapsed time: " << elapsed_time << " seconds" << std::endl;
+            std::cout << "There was a total of " << avl_file.getDiskAccessSearch() << " accesses to disk in search()\n";
            /*  for (Record rec : records)
                 rec.show(); */
             ingrese_0_para_salir(opcion);
