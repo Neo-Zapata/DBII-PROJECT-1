@@ -3,13 +3,13 @@
 ## Introduccion
 
 ### Objetivos del proyecto
+Implementar las estructuras de manejo de archivo sequential-file, avl-file y extendible hashing y sus métodos asociados de inserción, búsqueda y eliminación. Así mismo, evaluar la eficiencia de cada uno de los métodos a través de la generación de gráficos que relacionen cantidad de registros con tiempo de ejecución de un método.
 
 ### Descripcion del dataset
-Obtener la informacion de Kaggle: 
-- Titanic: ...
-- Pokemón: ...
+Se utilizaron datasets pertenecientes a la página https://www.kaggle.com/datasets, los cuáles fueron descargados como csv y cargados en nuevos archivos de datos para el correcto funcionamiento de los algoritmos de manejo de archivos físicos.
 
 ### Resultados esperados
+Funcionamiento adecuado de las estructuras de manejo de archivos y sus métodos asociados. Comportamiento asintótico experimental semejante al comportamiento asintótico teórico.
 
 ## Tecnicas utilizadas
 
@@ -32,10 +32,17 @@ Los registros a eliminar se buscan usando busqueda binaria (igual que en la Inse
 El registro a buscar puede o no estar en el `DataFile`. Sea el caso que sea, sabemos que el `DataFile` está ordenado y el `AuxFile` no. Entonces, se realiza una busqueda binaria en el `DataFile`, el cual retorna una posicion cercana a la que estamos buscando. En este caso, usamos los métodos `look_before()` y `look_after()` para recorrer los registros usando los punteros `next` y `prev`. Hasta encontrar los registros que cumplan con la busqueda.
 
 ![Alt Text](/images/pointers3.png)
-### tecnica 2
+### Extendible hashing
+El extendible hash es una estructura de almacenamiento dinámico. Consta de 3 elementos importantes, registros, buckets y el hash table. Los registros son un conjunto de información relacionada los cuales se encuentran en un inicio en el archivo dataset y posteriormente en buckets, estructuras de almacenamiento de registros. Así mismo, el hash_table es un conjunto de asociaciones key-value en donde el key es la llave a través del cual se puede llegar al value, valor en específico.  La estructura extendible hash emula el funcionamiento de una base de datos, la organización, accesibilidad y perdurabilidad de los datos. Los archivos index.dat y data.dat me permiten manejar la perdurabilidad de los registros. Dentro de index.dat se almacenan las asociaciones key-value del hash_table mientras que en data.dat buckets de registros.
+
 #### Insercion
-#### Eliminacion
-#### Busqueda
+Se encarga de añadir registros a la base de datos. La inserción de registros contempla la existencia de llaves primarias en los registros y la no repetición de los mismos en la base de datos. En ese sentido, al momento de insertar un registro se hace un llamado a la función search. Luego, una vez visto que el registro tiene llave primaria única, se utiliza la función hash para poder ubicar el registro en un bucket correspondiente, mediante la iteración sobre el resultado de la función hash. Es así que, luego de encontrar el bucket correspondiente al registro que se va insertar se hacen verificaciones antes de insertarla. Como cada bucket tiene un factor de bloque, se verifica si el size de ese bucket es menor a dicho factor de bloque, si es así, se inserta normalmente en el array de registros que contiene el bucket. Si no se realiza la siguiente verificación, la cuál consiste en comparar el índice de profundidad Global (El cuál es el primer parámetro en la construcción de nuestra clase) con el índice de profundidad local que posee cada bucket. Si es menor, se procede crear un nuevo bucket, siempre actualizando los índices, es decir también se crea un nuevo bucket, y se procede a insertar los registros en ambos buckets de acuerdo a la función hash. Caso contrario, en el cuál la profundidad global es igual a la profundidad local, se procede a hacer un encadenamiento de un nuevo bucket que será insertado al final, sin olvidarse de actualizar el next del bucket asociado a este.
+
+#### Eliminación
+Realiza la búsqueda de un registro en función de su key_id. Pasamos el key_id por la  función hash, y el valor obtenido lo utilizamos en nuestro hash table para poder localizar la posición lógica del posible bucket con el registro que buscamos. Luego, una vez encontrado el bucket se procede a verificar de manera secuencial cada uno de los registros hasta encontrarlo, caso contrario se buscará en los registros encadenados hasta  que el bucket no tenga ningún encadenamiento
+
+#### Búsqueda
+Se realizan los mismos procedimientos que la búsqueda. Sin embargo, se agrega que luego de encontrarlo se pasa a intercambiar el registro de la posición size-1 del bucket con el de la posición del registro que buscamos. Luego se actualiza el size del bucket en size-=1 y listo.
 
 ### tecnica 3
 #### Insercion
@@ -107,5 +114,49 @@ El registro a buscar puede o no estar en el `DataFile`. Sea el caso que sea, sab
 |4000|	14|	23|	99.915|
 |4500|	14|	23|	113.315|
 |5000|	14|	23|	126.815|
+
+### Extendible Hash
+#### Tabla de tiempos (s)
+| Registros | Inserción | Búsqueda | Eliminación |
+|-----------|-------|----------------|----------------|
+| 500	|0,1502|0,00038477	|0,00008395	|
+|1.000|0,4472|0,00032100	|0,00007445	|
+|1.500|0,4110|0,00033504	|0,00007753	|
+|2.000|0,6523|0,00029516	|0,00008479	|
+|2.500|0,6929|0,00029784	|0,00010769 |
+|3.000|0,7814|0,00026897	|0,00008123 |
+|3.500|1,1101|0,00033798	|0,00007683	|
+|4.000|1,1718|0,00044365	|0,00007669	|
+|4.500|1,3454|0,00037787  |0,00010833 |
+|5.000|1,2573|0,00034147	|0,00007858	|
+
+
+#### Accesos a disco
+| Registros | Inserción | Búsqueda | Eliminación |
+|-----------|-------|----------------|----------------|
+|500	|3.475|1|2|
+|1.000|6.621|1|2|
+|1.500|9.417|1|2|
+|2.000|12.933|1|2|
+|2.500|15.310|1|2|
+|3.000|18.164|1|2|
+|3.500|22.114|1|2|
+|4.000|24.979|1|2|
+|4.500|27.526|1|2|
+|5.000|30.951|1|2|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Pruebas de uso y presentacion
 Adjuntar fotos, videos, etc. Mostrando la funcionalidad del programa
