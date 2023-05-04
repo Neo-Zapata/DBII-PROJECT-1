@@ -93,7 +93,7 @@ public:
         cout<<"------ Insert ------"<<endl;
         this->disk_accesses_insert = 0;
         std::fstream file(this->filename, std::ios::in|std::ios::out|std::ios::binary );
-        //insert(file, this->root, record , true);
+        
         insert(file, this->root, record );
         file.close();
     }
@@ -243,11 +243,11 @@ void AVLFile::insert(std::fstream& file, long& root, AVLRecord& record) {
         } else if (record.anime_id < node.data.anime_id) {
             if (node.left == -1) {
                 // Creamos un nuevo nodo y lo enlazamos a la izquierda del nodo actual
-                file.seekp(0, std::ios_base::end);
-                long new_node_pos = file.tellp();
-                NodeBT new_node(record);
-                new_node.pos = new_node_pos;
-                node.left = new_node_pos;
+                file.seekp(0, std::ios_base::end); // ir a la ultima posicion
+                long new_node_pos = file.tellp(); // posicion actual del puntero
+                NodeBT new_node(record); // creamos el nodo
+                new_node.pos = new_node_pos; // Guardamos su ubicacion en el archivo
+                node.left = new_node_pos; // en el nodo actual insertamos a la izquierda su posicion
                 file.seekp(node_pos);
                 file.write((char*)&node, sizeof(NodeBT));
                 file.write((char*)&new_node, sizeof(NodeBT));
@@ -314,10 +314,12 @@ void AVLFile::remove(std::fstream& file, long& record_pos, int value) {
         // Caso en el que se encuentra el valor a eliminar
         if (current_node.left == -1 && current_node.right == -1) {
             // Caso 1: El nodo a eliminar es una hoja
+            // Eliminar
+            //record_pos = -1; // Establecemos que pasamos una posicion vacia
             record_pos = -1;
             balance(file, record_pos);
-            file.seekp(0, std::ios::beg);
-            file.write((char*)&root, sizeof(long));
+            file.seekp(record_pos, std::ios::beg);
+            file.write((char*)&record_pos, sizeof(long));
             this->disk_accesses_remove++;
         } else if (current_node.left == -1 || current_node.right == -1) {
             // Caso 2: El nodo a eliminar tiene un solo hijo
@@ -365,6 +367,7 @@ AVLFile::NodeBT AVLFile::find_predecessor(std::fstream& file, long& record_pos, 
             // No hay predecesor
             return NodeBT();
         }
+        // BUscamos al padre de ese nodo
         NodeBT parent;
         file.seekg(parent_pos); // Nos ubicamos en el padre del nodo actual
         file.read((char*)&parent, sizeof(NodeBT));
@@ -573,13 +576,13 @@ void AVLFile::rotateRight(std::fstream& file, long& node) {
 }
 
 void AVLFile::writeNode(std::fstream& file, long pos, const NodeBT& node) {
-    file.seekp(pos * sizeof(NodeBT));
+    file.seekp(pos );
     file.write(reinterpret_cast<const char*>(&node), sizeof(NodeBT));
 }
 
 AVLFile::NodeBT AVLFile::readNode(std::fstream& file, long pos) {
     NodeBT node;
-    file.seekg(pos * sizeof(NodeBT));
+    file.seekg(pos );
     file.read(reinterpret_cast<char*>(&node), sizeof(NodeBT));
     node.pos = pos;
     return node;
