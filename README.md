@@ -46,12 +46,7 @@ Se encarga de añadir registros a la base de datos. La inserción de registros c
 Se realizan los mismos procedimientos que la búsqueda. Sin embargo, se agrega que luego de encontrarlo se pasa a intercambiar el registro de la posición size-1 del bucket con el de la posición del registro que buscamos. Luego se actualiza el size del bucket en size-=1 y listo.
 
 #### Eliminación
-Realiza la búsqueda de un registro en función de su key_id. Pasamos el key_id por la  función hash, y el valor obtenido lo utilizamos en nuestro hash table para poder localizar la posición lógica del posible bucket con el registro que buscamos. Luego, una vez encontrado el bucket se procede a verificar de manera secuencial cada uno de los registros hasta encontrarlo, caso contrario se buscará en los registros encadenados hasta  que el bucket no tenga ningún encadenamiento
-
-### tecnica 3
-#### Insercion
-#### Eliminacion
-#### Busqueda
+Realiza la búsqueda de un registro en función de su key_id. Pasamos el key_id por la  función hash, y el valor obtenido lo utilizamos en nuestro hash table para poder localizar la posición lógica del posible bucket con el registro que buscamos. Luego, una vez encontrado el bucket se procede a verificar de manera secuencial cada uno de los registros hasta encontrarlo, caso contrario se buscará en los registros encadenados hasta  que el bucket no tenga ningún encadenamiento.
 
 ## Resultados Experimentales
 ### Sequential (without rebuild - worst case - O(log(k) + h))
@@ -172,6 +167,15 @@ El número de accesos de memoria en la búsqueda de un record es constante respe
 <img src="/images/ext_h_08.png"  width="65%">
 El delete maneja internamente el search para encontrar el record a eliminar y una secuencia de instrucciones adicional que no requiere adicionales accesos a memoria, por lo tanto, el número de accesos de memoria en la eliminación de un record es constante respecto a la cantidad de registros que se tenga.
 
+### AVL
+El árbol AVL es un tipo de árbol binario de búsqueda equilibrado en el que la altura de los subárboles izquierdo y derecho de cada nodo difiere en no más de uno. Esta propiedad permite que al aplicarlo como técnica de organización de archivos las operaciones de inserción, eliminación y búsqueda se realicen en un tiempo de ejecución O(log n). De esta manera, el AVL se situa como una técnica muy efectiva para la gestión de grandes cantidades de registros en un archivo, y es especialmente útil cuando se requiere un acceso rápido y eficiente a los datos almacenados.
+
+Una desventaja del AVL es que para utilizar los registros en una estructura AVL es necesario hacer uso de espacios de memoria adicionales en los que se almacena las posiciones físicas de los 'nodos hijo' izquierdo y derecho, la posición del registro, y la altura.
+
+#### Insercion
+
+#### Eliminacion
+#### Busqueda
 
 ## Pruebas de uso y presentacion
 Adjuntar fotos, videos, etc. Mostrando la funcionalidad del programa
