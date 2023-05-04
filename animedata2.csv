@@ -1,6 +1,81 @@
 anime_id,name,type,episodes,rating,members
-33874,Naruto 1 ,Special,1,6.96,117
-33875,Naruto 2 ,Special,1,6.95,104
-33876,Naruto 3 ,Special,1,6.3,90
-33872,Naruto 4 ,Special,1,7.0,108
-33871,Naruto 5 ,Special,1,7.0,108
+1,Cowboy Bebop,TV,26,8.82,486824
+5,Cowboy Bebop: Tengoku no Tobira,Movie,1,8.4,137636
+6,Trigun,TV,26,8.32,283069
+7,Witch Hunter Robin,TV,26,7.36,64905
+8,Beet the Vandel Buster,TV,52,7.06,9848
+15,Eyeshield 21,TV,145,8.08,83648
+16,Hachimitsu to Clover,TV,24,8.18,130646
+17,Hungry Heart: Wild Striker,TV,52,7.74,13469
+18,Initial D Fourth Stage,TV,24,8.24,41584
+19,Monster,TV,74,8.72,247562
+20,Naruto,TV,220,7.81,683297
+21,One Piece,TV,0,8.58,504862
+22,Prince of Tennis,TV,178,8.04,87643
+23,Ring ni Kakero 1,TV,12,6.7,2224
+24,School Rumble,TV,26,8.06,178553
+25,Sunabouzu,TV,24,7.55,65516
+26,Texhnolyze,TV,22,7.78,95859
+27,Trinity Blood,TV,24,7.44,113791
+28,Yakitate!! Japan,TV,69,8.05,50876
+29,Zipang,TV,26,7.56,8630
+30,Neon Genesis Evangelion,TV,26,8.32,461946
+31,Neon Genesis Evangelion: Death &amp; Rebirth,Movie,1,7.51,102093
+32,Neon Genesis Evangelion: The End of Evangelion,Movie,1,8.45,215630
+33,Berserk,TV,25,8.4,226430
+43,Ghost in the Shell,Movie,1,8.34,223036
+44,Rurouni Kenshin: Meiji Kenkaku Romantan - Tsuioku-hen,OVA,4,8.83,129307
+45,Rurouni Kenshin: Meiji Kenkaku Romantan,TV,94,8.43,218928
+46,Rurouni Kenshin: Meiji Kenkaku Romantan - Ishinshishi e no Chinkonka,Movie,1,7.65,33191
+47,Akira,Movie,1,8.15,215897
+48,.hack//Sign,TV,26,7.14,110304
+49,Aa! Megami-sama!,OVA,5,7.41,34590
+50,Aa! Megami-sama! (TV),TV,24,7.45,96694
+51,Tenshi Kinryouku,OVA,3,6.46,36352
+52,Kidou Tenshi Angelic Layer,TV,26,7.32,39758
+53,Ai Yori Aoshi,TV,24,7.24,66597
+54,Appleseed (Movie),Movie,1,7.21,49553
+55,Arc the Lad,TV,26,6.62,10392
+56,Avenger,TV,13,6.02,12286
+57,Beck,TV,26,8.4,148328
+58,Blue Gender,TV,26,7.13,40581
+59,Chobits,TV,26,7.57,266846
+60,Chrno Crusade,TV,24,7.8,140865
+61,D.N.Angel,TV,26,7.35,126914
+62,D.C.: Da Capo,TV,26,6.93,49909
+63,DearS,TV,12,6.8,91037
+64,Rozen Maiden,TV,12,7.57,128688
+65,Rozen Maiden: Träumend,TV,12,7.78,72645
+66,Azumanga Daioh,TV,26,8.06,170901
+67,Basilisk: Kouga Ninpou Chou,TV,24,7.68,98144
+68,Black Cat,TV,23,7.52,150512
+69,Cluster Edge,TV,25,6.48,6995
+71,Full Metal Panic!,TV,24,7.81,256325
+72,Full Metal Panic? Fumoffu,TV,12,8.21,171086
+73,Full Metal Panic! The Second Raid,TV,13,8.06,155340
+74,Gakuen Alice,TV,26,7.8,52995
+75,Soukyuu no Fafner: Dead Aggressor,TV,25,7.38,27516
+76,Mahou Shoujo Lyrical Nanoha,TV,13,7.52,62582
+77,Mahou Shoujo Lyrical Nanoha A&#039;s,TV,13,8.1,41685
+79,Shuffle!,TV,24,7.31,158772
+80,Mobile Suit Gundam,TV,43,7.89,51566
+81,Mobile Suit Gundam: The 08th MS Team,OVA,12,8.13,34177
+82,Mobile Suit Gundam 0080: War in the Pocket,OVA,6,7.85,22609
+83,Mobile Suit Gundam: The 08th MS Team - Miller&#039;s Report,Movie,1,6.95,8078
+84,Mobile Suit Gundam 0083: Stardust Memory,OVA,13,7.47,20238
+85,Mobile Suit Zeta Gundam,TV,50,8.03,28959
+86,Mobile Suit Gundam ZZ,TV,47,6.81,17517
+87,Mobile Suit Gundam: Char&#039;s Counterattack,Movie,1,7.81,19258
+88,Mobile Suit Gundam F91,Movie,1,6.9,13456
+89,Mobile Suit Victory Gundam,TV,51,6.98,12673
+90,Mobile Suit Gundam Wing,TV,49,7.87,86001
+91,Mobile Suit Gundam Wing: Endless Waltz,OVA,3,7.87,28485
+92,After War Gundam X,TV,39,7.39,19132
+93,Mobile Suit Gundam Seed,TV,50,7.93,96973
+94,Mobile Suit Gundam Seed Destiny,TV,50,7.36,65896
+95,Turn A Gundam,TV,50,7.76,20056
+96,Mobile Fighter G Gundam,TV,49,7.62,36338
+97,Last Exile,TV,26,7.94,104193
+98,Mai-HiME,TV,26,7.59,76492
+99,Mai-Otome,TV,26,7.4,36924
+100,Shin Shirayuki-hime Densetsu Prétear,TV,13,7.33,37394

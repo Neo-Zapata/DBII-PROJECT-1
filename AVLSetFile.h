@@ -5,7 +5,7 @@
 #ifndef RECORDLECTURE_SETAVLFILE_H
 #define RECORDLECTURE_SETAVLFILE_H
 
-#include "avlfile.h"
+#include "AVLFile.h"
 
 istream & operator >> (istream & stream, AVLRecord & p){
     string campo;
@@ -68,11 +68,11 @@ void read_write_dataset(string filename, string avlfilename, AVLFile& avl_file){
         int cont = 0;
         getline(file, line); // Leemos toda la linea
         while (getline(file, line)){
-            cout<<endl<<"| ------------- " << ++cont << " ------------- |"<<endl;
-            cout<<endl<<"\nEntra: -> ";
+            //cout<<endl<<"| ------------- " << ++cont << " ------------- |"<<endl;
+            //cout<<endl<<"\nEntra: -> ";
             stringstream stream(line);
             stream >> anime;
-            cout<<anime;
+            //cout<<anime;
             avl_file.insert(anime);// Insertamos al AVL si es que existe
         }
         cout<<"root final: "; avl_file.getDates();

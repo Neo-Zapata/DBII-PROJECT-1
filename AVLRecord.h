@@ -17,14 +17,14 @@
 using namespace std;
 
 #define NAME_SIZE 110
-#define TYPE_SIZ_E  8 
+#define TYPE_SIZ_E  14
 
 struct AVLRecord{
 
 public:
     int anime_id;
     char name[110];
-    char type[8];
+    char type[14];
     int episodes;
     float rating;
     int members;
