@@ -132,9 +132,9 @@ Realiza la búsqueda de un registro en función de su key_id. Pasamos el key_id 
 |4.500|1,3454|0,00037787  |0,00010833 |
 |5.000|1,2573|0,00034147	|0,00007858	|
 #### Gráficas
-<img src="/images/ext_h_03.png"  width="70%">
-<img src="/images/ext_h_04.png"  width="70%">
-<img src="/images/ext_h_05.png"  width="70%">
+<img src="/images/ext_h_03.png"  width="65%">
+<img src="/images/ext_h_04.png"  width="65%">
+<img src="/images/ext_h_05.png"  width="65%">
 
 #### Accesos a disco
 | Registros | Inserción | Búsqueda | Eliminación |
@@ -150,7 +150,7 @@ Realiza la búsqueda de un registro en función de su key_id. Pasamos el key_id 
 |4.500|27.526|1|2|
 |5.000|30.951|1|2|
 #### Gráficas
-![Alt Text](/images/ext_h_06.png)
+<img src="/images/ext_h_06.png"  width="65%">
 
 ## Pruebas de uso y presentacion
 Adjuntar fotos, videos, etc. Mostrando la funcionalidad del programa
