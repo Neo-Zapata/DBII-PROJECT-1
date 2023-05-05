@@ -233,4 +233,4 @@ El delete maneja internamente el search para encontrar el record a eliminar y un
 |5000|	12.512.494|	20|	44|
 
 ## Pruebas de uso y presentacion
-Adjuntar fotos, videos, etc. Mostrando la funcionalidad del programa
+Video: https://drive.google.com/drive/folders/1uqld9IppTaIyTZ7YngERJeusa2hR3ryI?usp=sharing
